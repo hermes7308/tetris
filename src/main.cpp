@@ -1,26 +1,43 @@
 
 #include <ncurses.h>
+#include <iostream>
 #include "game/IntroPage.h"
 
 void setup() {
-    initscr();
-    clear();
-    noecho();
-    cbreak();
-    curs_set(0);
+	setlocale(LC_ALL, "");
+
+	initscr();
+	clear();
+	noecho();
+	cbreak();
+	curs_set(0);
+}
+
+void destroy() {
+	endwin();
 }
 
 int main() {
+	// setup
+	setup();
 
-    setup();
+	// intro
+	// player one, player two
+	auto *introPage = new IntroPage();
+	IntroPageResult result = introPage->Start();
 
-    // intro
-    // player one, player two
-    IntroPage *introPage = new IntroPage();
-	introPage->Start();
+	delete introPage;
 
-    // physics
+	switch (result) {
+		case IntroPageResult::START:
+			mvprintw(0, 0, "Start Tetris");
+			break;
+		case IntroPageResult::EXIT:
+			break;
+		default:
+			break;
+	}
 
-    // render
-
+	// destroy
+	destroy();
 }

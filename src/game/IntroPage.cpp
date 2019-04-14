@@ -5,10 +5,11 @@
 #include <ncurses.h>
 #include "IntroPage.h"
 
-int key;
 
-PlayerCount IntroPage::Start() {
-	while (playerCount == PlayerCount::NONE_SELECTED) {
+IntroPageResult IntroPage::Start() {
+	this->renderStaticView();
+
+	while (this->result == IntroPageResult::NONE_SELECTED) {
 		// render
 		render();
 
@@ -20,14 +21,44 @@ PlayerCount IntroPage::Start() {
 
 	}
 
-	return playerCount;
+	return result;
+}
+
+void IntroPage::renderStaticView() {
+	int currentX = (WIDTH - TITLE_COLS) / 2;
+	int currentY = 3;
+
+	// TITLE
+	for (int i = 0; i < TITLE_ROWS; i++) {
+		mvprintw(currentY++, currentX, "%s", TITLE[i]);
+	}
+
+	// Author
+	currentY++;
+	mvprintw(currentY++, currentX + 40, "%s", AUTHOR);
+
+	// start
+	startX = currentX + 7;
+	currentY += 5;
+	startY = currentY;
+	mvprintw(startY, startX + 2, "Start");
+	exitY = ++currentY;
+	mvprintw(exitY, startX + 2, "Exit");
 }
 
 void IntroPage::render() {
-	clear();
-
-	move(0, 0);
-	printw("%d\n", currentCursor);
+	switch (currentCursor) {
+		case START:
+			mvprintw(exitY, startX, "%s", CURSOR_SPACE);
+			mvprintw(startY, startX, "%s", CURSOR_CHARECTOR);
+			break;
+		case EXIT:
+			mvprintw(startY, startX, "%s", CURSOR_SPACE);
+			mvprintw(exitY, startX, "%s", CURSOR_CHARECTOR);
+			break;
+		default:
+			break;
+	}
 }
 
 void IntroPage::input() {
@@ -54,11 +85,11 @@ void IntroPage::input() {
 	// Enter, (10)
 	if (key == 10) {
 		switch (currentCursor) {
-			case Cursor::ONE_PERSON:
-				break;
-			case Cursor::TWO_PEOPLE:
+			case Cursor::START:
+				result = IntroPageResult::START;
 				break;
 			case Cursor::EXIT:
+				result = IntroPageResult::EXIT;
 				break;
 			default:
 				break;

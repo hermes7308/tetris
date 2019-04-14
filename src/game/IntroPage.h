@@ -5,33 +5,58 @@
 #ifndef TETRIS_INTROPAGE_H
 #define TETRIS_INTROPAGE_H
 
+#include <string>
+#include "../model/IntroPageResult.h"
 
 static const int UP = 65;
-
 static const int DOWN = 66;
-
-#include "../model/PlayerCount.h"
 
 class IntroPage {
 public:
-	PlayerCount Start();
-
 	enum Cursor {
-		ONE_PERSON = 0,
-		TWO_PEOPLE,
+		START = 0,
 		EXIT,
 
 		COUNT
 	};
 
-private:
-	PlayerCount playerCount = PlayerCount::NONE_SELECTED;
+	IntroPageResult Start();
 
-	int currentCursor = ONE_PERSON;
+private:
+	const char *TITLE[6] = {
+			"████████╗███████╗████████╗██████╗ ██╗███████╗", // 45
+			"╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝",
+			"   ██║   █████╗     ██║   ██████╔╝██║███████╗",
+			"   ██║   ██╔══╝     ██║   ██╔══██╗██║╚════██║",
+			"   ██║   ███████╗   ██║   ██║  ██║██║███████║",
+			"   ╚═╝   ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝"
+	};
+
+
+	const char *AUTHOR = "Created by HERMES";
+	const int WIDTH = 80;
+	const int HEIGHT = 24;
+	const int TITLE_ROWS = 6;
+	const int TITLE_COLS = 45;
+
+	const char *CURSOR_CHARECTOR = "➡";
+	const char *CURSOR_SPACE = " ";
+
+	IntroPageResult result = IntroPageResult::NONE_SELECTED;
+
+	int currentCursor = START;
+
+	int startY;
+	int startX;
+	int exitY;
+
+	int key;
 
 	void up();
 
 	void down();
+
+	void renderStaticView();
 
 	void render();
 

@@ -8,6 +8,9 @@
 
 class Tetris {
 
+private:
+	const int WIDTH = 80;
+	const int HEIGHT = 24;
 };
 
 
