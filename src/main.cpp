@@ -24,15 +24,15 @@ int main() {
 	// intro
 	// player one, player two
 	auto *introPage = new IntroPage();
-	IntroPageResult result = introPage->Start();
+	IntroPage::Cursor result = introPage->Start();
 
 	delete introPage;
 
 	switch (result) {
-		case IntroPageResult::START:
+		case IntroPage::START:
 			mvprintw(0, 0, "Start Tetris");
 			break;
-		case IntroPageResult::EXIT:
+		case IntroPage::EXIT:
 			break;
 		default:
 			break;

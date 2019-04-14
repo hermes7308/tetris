@@ -6,10 +6,8 @@
 #include "IntroPage.h"
 
 
-IntroPageResult IntroPage::Start() {
-	this->renderStaticView();
-
-	while (this->result == IntroPageResult::NONE_SELECTED) {
+IntroPage::Cursor IntroPage::Start() {
+	while (this->result == Cursor::NONE_SELECTED) {
 		// render
 		render();
 
@@ -18,13 +16,14 @@ IntroPageResult IntroPage::Start() {
 
 		// physics
 		physics();
-
 	}
 
 	return result;
 }
 
-void IntroPage::renderStaticView() {
+void IntroPage::render() {
+	clear();
+
 	int currentX = (WIDTH - TITLE_COLS) / 2;
 	int currentY = 3;
 
@@ -44,17 +43,13 @@ void IntroPage::renderStaticView() {
 	mvprintw(startY, startX + 2, "Start");
 	exitY = ++currentY;
 	mvprintw(exitY, startX + 2, "Exit");
-}
 
-void IntroPage::render() {
 	switch (currentCursor) {
 		case START:
-			mvprintw(exitY, startX, "%s", CURSOR_SPACE);
-			mvprintw(startY, startX, "%s", CURSOR_CHARECTOR);
+			mvprintw(startY, startX, "%s", CURSOR_CHARACTER);
 			break;
 		case EXIT:
-			mvprintw(startY, startX, "%s", CURSOR_SPACE);
-			mvprintw(exitY, startX, "%s", CURSOR_CHARECTOR);
+			mvprintw(exitY, startX, "%s", CURSOR_CHARACTER);
 			break;
 		default:
 			break;
@@ -86,10 +81,10 @@ void IntroPage::input() {
 	if (key == 10) {
 		switch (currentCursor) {
 			case Cursor::START:
-				result = IntroPageResult::START;
+				result = IntroPage::START;
 				break;
 			case Cursor::EXIT:
-				result = IntroPageResult::EXIT;
+				result = IntroPage::EXIT;
 				break;
 			default:
 				break;

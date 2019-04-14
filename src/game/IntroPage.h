@@ -14,13 +14,14 @@ static const int DOWN = 66;
 class IntroPage {
 public:
 	enum Cursor {
+		NONE_SELECTED = -1,
 		START = 0,
 		EXIT,
 
 		COUNT
 	};
 
-	IntroPageResult Start();
+	Cursor Start();
 
 private:
 	const char *TITLE[6] = {
@@ -39,10 +40,9 @@ private:
 	const int TITLE_ROWS = 6;
 	const int TITLE_COLS = 45;
 
-	const char *CURSOR_CHARECTOR = "➡";
-	const char *CURSOR_SPACE = " ";
+	const char *CURSOR_CHARACTER = "➡"; // character
 
-	IntroPageResult result = IntroPageResult::NONE_SELECTED;
+	Cursor result = NONE_SELECTED;
 
 	int currentCursor = START;
 
@@ -55,8 +55,6 @@ private:
 	void up();
 
 	void down();
-
-	void renderStaticView();
 
 	void render();
 
