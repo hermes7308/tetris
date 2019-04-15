@@ -6,7 +6,6 @@
 #define TETRIS_INTROPAGE_H
 
 #include <string>
-#include "../model/IntroPageResult.h"
 
 static const int UP = 65;
 static const int DOWN = 66;
@@ -24,6 +23,9 @@ public:
 	Cursor Start();
 
 private:
+	const int WIDTH = 80;
+	const int HEIGHT = 24;
+
 	const char *TITLE[6] = {
 			"████████╗███████╗████████╗██████╗ ██╗███████╗", // 45
 			"╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝",
@@ -32,20 +34,14 @@ private:
 			"   ██║   ███████╗   ██║   ██║  ██║██║███████║",
 			"   ╚═╝   ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝"
 	};
-
-
-	const char *AUTHOR = "Created by HERMES";
-	const int WIDTH = 80;
-	const int HEIGHT = 24;
 	const int TITLE_ROWS = 6;
 	const int TITLE_COLS = 45;
 
+	const char *AUTHOR = "Created by HERMES";
+
 	const char *CURSOR_CHARACTER = "➡"; // character
-
 	Cursor result = NONE_SELECTED;
-
 	int currentCursor = START;
-
 	int startY;
 	int startX;
 	int exitY;
