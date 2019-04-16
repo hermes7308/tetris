@@ -82,6 +82,8 @@ private:
 	Block *createBlock();
 
 	void addBlockToQueue();
+
+	bool isAllowedBlock();
 };
 
 

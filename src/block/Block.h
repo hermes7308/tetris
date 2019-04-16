@@ -52,7 +52,7 @@ public:
 
 		DEGREE_COUNT
 	};
-	unsigned int degree = DEGREE_0;
+	int degree = DEGREE_0;
 
 	Coordinate coordinate{};
 

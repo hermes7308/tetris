@@ -116,31 +116,41 @@ void Tetris::drawCurrentBlock() {
 
 	auto coordinates = currentBlock->getBlockCoordinates();
 	for (Block::Coordinate coordinate : coordinates) {
-		mvprintw(coordinate.y, coordinate.x, "%s", BLOCK_CHARACTER);
+		mvprintw(groundY + coordinate.y, groundX + coordinate.x, "%s", BLOCK_CHARACTER);
 	}
 	coordinates.clear();
-
-	int count = 1;
-	for (auto &block : blockQueue) {
-		mvprintw(count, 30, "block index : %d, type : %d", count, block->blockType);
-		count++;
-	}
 }
 
 void Tetris::moveToUp() {
 	currentBlock->coordinate.y--;
+
+	if (!isAllowedBlock()) {
+		currentBlock->coordinate.y++;
+	}
 }
 
 void Tetris::moveToRight() {
 	currentBlock->coordinate.x++;
+
+	if (!isAllowedBlock()) {
+		currentBlock->coordinate.x--;
+	}
 }
 
 void Tetris::moveToLeft() {
 	currentBlock->coordinate.x--;
+
+	if (!isAllowedBlock()) {
+		currentBlock->coordinate.x++;
+	}
 }
 
 void Tetris::moveToDown() {
 	currentBlock->coordinate.y++;
+
+	if (!isAllowedBlock()) {
+		currentBlock->coordinate.y--;
+	}
 }
 
 void Tetris::moveToDestination() {
@@ -149,6 +159,10 @@ void Tetris::moveToDestination() {
 
 void Tetris::rotate() {
 	currentBlock->rotateClockwise();
+
+	if (!isAllowedBlock()) {
+		currentBlock->rotateCounterClockwise();
+	}
 }
 
 Block *Tetris::createBlock() {
@@ -177,4 +191,27 @@ Block *Tetris::createBlock() {
 void Tetris::addBlockToQueue() {
 	Block *newBlock = createBlock();
 	blockQueue.push_back(newBlock);
+}
+
+bool Tetris::isAllowedBlock() {
+	vector<Block::Coordinate> coordinates = currentBlock->getBlockCoordinates();
+
+	for (auto &coordinate : coordinates) {
+
+		int x = coordinate.x;
+		if (x < 0 || x >= COLS) {
+			return false;
+		}
+
+		int y = coordinate.y;
+		if (y < 0 || y >= ROWS) {
+			return false;
+		}
+
+		if (stackedBlocks[y][x] != 0) {
+			return false;
+		}
+	}
+
+	return true;
 }

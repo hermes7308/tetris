@@ -5,7 +5,6 @@
 #include <vector>
 #include "Block.h"
 
-using namespace std;
 
 vector<Block::Coordinate> Block::getBlockCoordinates() {
 	vector<Block::Coordinate> coordinates;
@@ -26,19 +25,20 @@ void Block::rotateClockwise() {
 }
 
 void Block::rotateCounterClockwise() {
+
 	degree--;
 
-	if (degree < Block::DEGREE_0) {
+	if (degree < 0) {
 		degree = Block::Degree::DEGREE_COUNT - 1;
 	}
-}
-
-Block::~Block() {
-
 }
 
 Block::Block(const Block::Coordinate &coordinate, Block::BlockType blockType, BlockColor color) {
 	this->coordinate = coordinate;
 	this->blockType = blockType;
 	this->color = color;
+}
+
+Block::~Block() {
+
 }
