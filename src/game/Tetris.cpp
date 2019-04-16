@@ -145,16 +145,26 @@ void Tetris::moveToLeft() {
 	}
 }
 
-void Tetris::moveToDown() {
+Tetris::Stacked Tetris::moveToDown() {
 	currentBlock->coordinate.y++;
 
 	if (!isAllowedBlock()) {
 		currentBlock->coordinate.y--;
+
+		stackBlock(currentBlock);
+		loadNewBlock();
+		addBlockToQueue();
+
+		return Stacked::STACTED;
 	}
+
+	return Stacked::NOT_STACKED;
 }
 
 void Tetris::moveToDestination() {
-	currentBlock->coordinate.y = groundY + ROWS - 1;
+	while (Stacked::NOT_STACKED == moveToDown()) {
+
+	}
 }
 
 void Tetris::rotate() {
@@ -190,8 +200,20 @@ Block *Tetris::createBlock() {
 
 void Tetris::addBlockToQueue() {
 	Block *newBlock = createBlock();
-	blockQueue.push_back(newBlock);
+	blockQueue.insert(blockQueue.begin(), newBlock);
 }
+
+Block *Tetris::getBlockFromQueue() {
+	Block *newBlock = blockQueue.back();
+	blockQueue.pop_back();
+
+	return newBlock;
+}
+
+void Tetris::loadNewBlock() {
+	currentBlock = getBlockFromQueue();
+}
+
 
 bool Tetris::isAllowedBlock() {
 	vector<Block::Coordinate> coordinates = currentBlock->getBlockCoordinates();
@@ -214,4 +236,12 @@ bool Tetris::isAllowedBlock() {
 	}
 
 	return true;
+}
+
+void Tetris::stackBlock(Block *block) {
+	auto coordinates = block->getBlockCoordinates();
+	for (auto coordinate : coordinates) {
+		stackedBlocks[coordinate.y][coordinate.x] = block->color;
+	}
+	delete block;
 }

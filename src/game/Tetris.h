@@ -21,6 +21,11 @@ class Tetris : public Stage {
 public:
 	static const char *BLOCK_CHARACTER;
 
+	enum Stacked {
+		NOT_STACKED,
+		STACTED,
+	};
+
 	Tetris();
 
 	virtual ~Tetris();
@@ -46,8 +51,8 @@ private:
 	const int groundX = borderX + 1;
 	const int groundY = borderY + 1;
 	// start
-	const int startX = groundX + 4;
-	const int startY = groundY + 2;
+	const int startX = groundX + 3;
+	const int startY = 1;
 
 	Block *currentBlock = nullptr;
 
@@ -72,7 +77,7 @@ private:
 
 	void moveToLeft();
 
-	void moveToDown();
+	Stacked moveToDown();
 
 	void moveToDestination();
 
@@ -83,7 +88,13 @@ private:
 
 	void addBlockToQueue();
 
+	Block *getBlockFromQueue();
+
+	void loadNewBlock();
+
 	bool isAllowedBlock();
+
+	void stackBlock(Block *block);
 };
 
 
