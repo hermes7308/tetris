@@ -25,18 +25,12 @@ Tetris::Tetris() {
 	}
 
 	currentBlock = createBlock();
-
-	// gameTimer
-	startGameTimer();
 }
 
 Tetris::~Tetris() {
 	delete currentBlock;
 
 	blockQueue.clear();
-
-	// gameTimer
-	stopGameTimer();
 }
 
 void Tetris::draw(StageContext *context) {
@@ -153,8 +147,6 @@ void Tetris::drawCurrentBlock() {
 void Tetris::drawMetaInfo() const {
 	mvprintw(1, 14, "Degree: %d", currentBlock->degree);
 	mvprintw(2, 14, "key : %d", key);
-	mvprintw(3, 14, "count : %d", count);
-
 }
 
 Tetris::MoveStatus Tetris::moveToUp() {
@@ -289,25 +281,6 @@ void Tetris::stackBlock(Block *block) {
 		stackedBlocks[coordinate.y][coordinate.x] = block->color;
 	}
 	delete block;
-}
-
-void Tetris::startGameTimer() {
-	gameTimerThread = std::thread([=]() {
-		isRunning = true;
-
-		while (isRunning) {
-			this_thread::sleep_for(chrono::milliseconds(MAX_SPEED - speed));
-			if (isRunning) {
-				count++;
-				this->moveToDown();
-			}
-		}
-	});
-}
-
-void Tetris::stopGameTimer() {
-	this->isRunning = false;
-	delete this;
 }
 
 void Tetris::setSpeed(int speed) {

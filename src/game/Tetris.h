@@ -9,6 +9,7 @@
 #include <vector>
 #include <ncurses.h>
 #include <random>
+#include <thread>
 #include "../core/Stage.h"
 #include "../block/Block.h"
 #include "../block/BlockI.h"
@@ -18,7 +19,6 @@
 #include "../block/BlockS.h"
 #include "../block/BlockT.h"
 #include "../block/BlockZ.h"
-#include "../timer/GameTimer.h"
 
 using namespace std;
 
@@ -114,13 +114,7 @@ private:
 	bool isFullRow(int row) const;
 
 	// gameTimer
-	void startGameTimer();
-
-	void stopGameTimer();
-
 	void setSpeed(int speed);
-
-	int count = 0;
 
 	void drawMetaInfo() const;
 };

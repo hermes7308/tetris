@@ -5,9 +5,13 @@
 #include <ncurses.h>
 #include "Stage.h"
 
-void Stage::Start(StageContext *context) {
-	isRunning = true;
 
+Stage::~Stage() {
+	Stop();
+}
+
+void Stage::Start(StageContext *context) {
+	// render fix
 	while (isRunning) {
 		// draw
 		render(context);

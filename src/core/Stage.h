@@ -5,10 +5,15 @@
 #ifndef TETRIS_STAGE_H
 #define TETRIS_STAGE_H
 
-
+#include <thread>
 #include "StageContext.h"
 
+using namespace std;
+
 class Stage {
+public:
+	virtual ~Stage();
+
 public:
 	const int WIDTH = 80;
 	const int HEIGHT = 24;
@@ -26,6 +31,8 @@ protected:
 
 private:
 	bool isRunning = true;
+
+	thread inputThread;
 
 	void render(StageContext *context);
 };

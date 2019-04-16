@@ -38,6 +38,9 @@ int main() {
 
 		stage->Start(context);
 	}
+	delete context;
+
+	stages.clear();
 
 	// destroy
 	destroy();
