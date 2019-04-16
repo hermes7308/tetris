@@ -12,6 +12,7 @@
 #include "../block/BlockJ.h"
 #include "../block/BlockL.h"
 #include "../block/BlockO.h"
+#include "../block/BlockS.h"
 #include <queue>
 
 class Tetris : public Stage {
@@ -44,7 +45,7 @@ private:
 	const int startX = groundX + 4;
 	const int startY = groundY + 2;
 
-	Block *currentBlock = new BlockO();
+	Block *currentBlock = new BlockS();
 
 	// block queue
 	const int blockQueueSize = 5;
