@@ -15,13 +15,15 @@
 #include "../block/BlockS.h"
 #include "../block/BlockT.h"
 #include "../block/BlockZ.h"
-#include <queue>
+#include <vector>
 
 class Tetris : public Stage {
 public:
 	static const char *BLOCK_CHARACTER;
 
 	Tetris();
+
+	virtual ~Tetris();
 
 protected:
 	void draw(StageContext *context) override;
@@ -47,11 +49,11 @@ private:
 	const int startX = groundX + 4;
 	const int startY = groundY + 2;
 
-	Block *currentBlock = new BlockI();
+	Block *currentBlock = nullptr;
 
 	// block queue
 	const int blockQueueSize = 5;
-	queue<Block> blockQueue;
+	vector<Block *> blockQueue;
 
 	// input value
 	int key{};
@@ -75,6 +77,11 @@ private:
 	void moveToDestination();
 
 	void rotate();
+
+	// block queue
+	Block *createBlock();
+
+	void addBlockToQueue();
 };
 
 

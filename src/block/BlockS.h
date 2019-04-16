@@ -10,7 +10,7 @@
 
 class BlockS : public Block {
 public:
-	BlockS() : Block({0, 0}, Block::S, BlockColor::GREEN) {
+	BlockS(int x, int y) : Block({x, y}, Block::S, BlockColor::GREEN) {
 
 	};
 protected:

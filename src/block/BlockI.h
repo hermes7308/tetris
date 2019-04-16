@@ -9,7 +9,7 @@
 
 class BlockI : public Block {
 public:
-	BlockI() : Block({0, 0}, Block::I, BlockColor::CYAN) {
+	BlockI(int x, int y) : Block({x, y}, Block::I, BlockColor::CYAN) {
 
 	};
 

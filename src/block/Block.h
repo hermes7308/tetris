@@ -18,13 +18,15 @@ public:
 	};
 
 	enum BlockType {
-		I,
+		I = 0,
 		J,
 		L,
 		O,
 		S,
 		T,
-		Z
+		Z,
+
+		BLOCK_TYPE_COUNT
 	};
 
 	enum BlockColor {
@@ -48,7 +50,7 @@ public:
 		DEGREE_180,
 		DEGREE_270,
 
-		COUNT
+		DEGREE_COUNT
 	};
 	unsigned int degree = DEGREE_0;
 

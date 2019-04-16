@@ -3,6 +3,7 @@
 //
 
 #include <ncurses.h>
+#include <random>
 #include "Tetris.h"
 
 using namespace std;
@@ -18,7 +19,20 @@ static const int Z_LOWER = 122;
 const char *Tetris::BLOCK_CHARACTER = "■";
 
 Tetris::Tetris() {
+	srand(static_cast<unsigned int>(time(0)));
 
+	// add bloc to block queue
+	for (int i = 0; i < blockQueueSize; i++) {
+		addBlockToQueue();
+	}
+
+	currentBlock = createBlock();
+}
+
+Tetris::~Tetris() {
+	delete currentBlock;
+
+	blockQueue.clear();
 }
 
 void Tetris::draw(StageContext *context) {
@@ -104,8 +118,13 @@ void Tetris::drawCurrentBlock() {
 	for (Block::Coordinate coordinate : coordinates) {
 		mvprintw(coordinate.y, coordinate.x, "%s", BLOCK_CHARACTER);
 	}
-
 	coordinates.clear();
+
+	int count = 1;
+	for (auto &block : blockQueue) {
+		mvprintw(count, 30, "block index : %d, type : %d", count, block->blockType);
+		count++;
+	}
 }
 
 void Tetris::moveToUp() {
@@ -130,4 +149,32 @@ void Tetris::moveToDestination() {
 
 void Tetris::rotate() {
 	currentBlock->rotateClockwise();
+}
+
+Block *Tetris::createBlock() {
+	int blockType = rand() % Block::BlockType::BLOCK_TYPE_COUNT;
+
+	switch (blockType) {
+		case Block::BlockType::I:
+			return new BlockI(startX, startY);
+		case Block::BlockType::J:
+			return new BlockJ(startX, startY);
+		case Block::BlockType::L:
+			return new BlockL(startX, startY);
+		case Block::BlockType::O:
+			return new BlockO(startX, startY);
+		case Block::BlockType::S:
+			return new BlockS(startX, startY);
+		case Block::BlockType::T:
+			return new BlockT(startX, startY);
+		case Block::BlockType::Z:
+			return new BlockZ(startX, startY);
+		default:
+			return nullptr;
+	}
+}
+
+void Tetris::addBlockToQueue() {
+	Block *newBlock = createBlock();
+	blockQueue.push_back(newBlock);
 }

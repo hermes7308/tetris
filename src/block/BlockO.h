@@ -10,7 +10,7 @@
 
 class BlockO : public Block {
 public:
-	BlockO() : Block({0, 0}, Block::O, BlockColor::YELLOW) {
+	BlockO(int x, int y) : Block({x, y}, Block::O, BlockColor::YELLOW) {
 
 	};
 protected:

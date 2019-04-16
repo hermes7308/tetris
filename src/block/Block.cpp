@@ -20,7 +20,7 @@ vector<Block::Coordinate> Block::getBlockCoordinates() {
 void Block::rotateClockwise() {
 	degree++;
 
-	if (degree >= Block::Degree::COUNT) {
+	if (degree >= Block::Degree::DEGREE_COUNT) {
 		degree = 0;
 	}
 }
@@ -29,7 +29,7 @@ void Block::rotateCounterClockwise() {
 	degree--;
 
 	if (degree < Block::DEGREE_0) {
-		degree = Block::Degree::COUNT - 1;
+		degree = Block::Degree::DEGREE_COUNT - 1;
 	}
 }
 
