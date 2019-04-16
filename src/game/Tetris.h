@@ -6,6 +6,9 @@
 #define TETRIS_TETRIS_H
 
 
+#include <vector>
+#include <ncurses.h>
+#include <random>
 #include "../core/Stage.h"
 #include "../block/Block.h"
 #include "../block/BlockI.h"
@@ -15,20 +18,24 @@
 #include "../block/BlockS.h"
 #include "../block/BlockT.h"
 #include "../block/BlockZ.h"
-#include <vector>
+#include "../timer/GameTimer.h"
+
+using namespace std;
 
 class Tetris : public Stage {
 public:
 	static const char *BLOCK_CHARACTER;
 
-	enum Stacked {
-		NOT_STACKED,
-		STACTED,
+	enum MoveStatus {
+		NOT_MOVED,
+		MOVED,
 	};
 
 	Tetris();
 
 	virtual ~Tetris();
+
+	MoveStatus moveToDown();
 
 protected:
 	void draw(StageContext *context) override;
@@ -63,6 +70,14 @@ private:
 	// input value
 	int key{};
 
+	// gameTimer
+	const int MAX_SPEED = 1000;
+	const int MIN_SPEED = 100;
+
+	thread gameTimerThread;
+	int speed = MIN_SPEED;
+	bool isRunning = true;
+
 	// draw
 	void drawBorder();
 
@@ -71,13 +86,11 @@ private:
 	void drawCurrentBlock();
 
 	// input event
-	void moveToUp();
+	MoveStatus moveToUp();
 
-	void moveToRight();
+	MoveStatus moveToRight();
 
-	void moveToLeft();
-
-	Stacked moveToDown();
+	MoveStatus moveToLeft();
 
 	void moveToDestination();
 
@@ -99,6 +112,17 @@ private:
 	void removeFullRow();
 
 	bool isFullRow(int row) const;
+
+	// gameTimer
+	void startGameTimer();
+
+	void stopGameTimer();
+
+	void setSpeed(int speed);
+
+	int count = 0;
+
+	void drawMetaInfo() const;
 };
 
 

@@ -2,8 +2,6 @@
 // Created by 박현근 on 2019-04-10.
 //
 
-#include <ncurses.h>
-#include <random>
 #include "Tetris.h"
 
 using namespace std;
@@ -27,19 +25,26 @@ Tetris::Tetris() {
 	}
 
 	currentBlock = createBlock();
+
+	// gameTimer
+	startGameTimer();
 }
 
 Tetris::~Tetris() {
 	delete currentBlock;
 
 	blockQueue.clear();
+
+	// gameTimer
+	stopGameTimer();
 }
 
 void Tetris::draw(StageContext *context) {
 	drawBorder();
 	drawStackedBlock();
 	drawCurrentBlock();
-	mvprintw(0, 0, "key : %d", key);
+
+	drawMetaInfo();
 }
 
 void Tetris::input(StageContext *context) {
@@ -138,8 +143,6 @@ void Tetris::drawStackedBlock() {
 }
 
 void Tetris::drawCurrentBlock() {
-	mvprintw(1, 0, "Degree: %d", currentBlock->degree);
-
 	auto coordinates = currentBlock->getBlockCoordinates();
 	for (Block::Coordinate coordinate : coordinates) {
 		mvprintw(groundY + coordinate.y, groundX + coordinate.x, "%s", BLOCK_CHARACTER);
@@ -147,31 +150,47 @@ void Tetris::drawCurrentBlock() {
 	coordinates.clear();
 }
 
-void Tetris::moveToUp() {
+void Tetris::drawMetaInfo() const {
+	mvprintw(1, 14, "Degree: %d", currentBlock->degree);
+	mvprintw(2, 14, "key : %d", key);
+	mvprintw(3, 14, "count : %d", count);
+
+}
+
+Tetris::MoveStatus Tetris::moveToUp() {
 	currentBlock->coordinate.y--;
 
 	if (!isAllowedBlock()) {
 		currentBlock->coordinate.y++;
+		return NOT_MOVED;
 	}
+
+	return MOVED;
 }
 
-void Tetris::moveToRight() {
+Tetris::MoveStatus Tetris::moveToRight() {
 	currentBlock->coordinate.x++;
 
 	if (!isAllowedBlock()) {
 		currentBlock->coordinate.x--;
+		return NOT_MOVED;
 	}
+
+	return MOVED;
 }
 
-void Tetris::moveToLeft() {
+Tetris::MoveStatus Tetris::moveToLeft() {
 	currentBlock->coordinate.x--;
 
 	if (!isAllowedBlock()) {
 		currentBlock->coordinate.x++;
+		return NOT_MOVED;
 	}
+
+	return MOVED;
 }
 
-Tetris::Stacked Tetris::moveToDown() {
+Tetris::MoveStatus Tetris::moveToDown() {
 	currentBlock->coordinate.y++;
 
 	if (!isAllowedBlock()) {
@@ -181,14 +200,14 @@ Tetris::Stacked Tetris::moveToDown() {
 		loadNewBlock();
 		addBlockToQueue();
 
-		return Stacked::STACTED;
+		return MOVED;
 	}
 
-	return Stacked::NOT_STACKED;
+	return NOT_MOVED;
 }
 
 void Tetris::moveToDestination() {
-	while (Stacked::NOT_STACKED == moveToDown()) {
+	while (MoveStatus::NOT_MOVED == moveToDown()) {
 
 	}
 }
@@ -270,4 +289,33 @@ void Tetris::stackBlock(Block *block) {
 		stackedBlocks[coordinate.y][coordinate.x] = block->color;
 	}
 	delete block;
+}
+
+void Tetris::startGameTimer() {
+	gameTimerThread = std::thread([=]() {
+		isRunning = true;
+
+		while (isRunning) {
+			this_thread::sleep_for(chrono::milliseconds(MAX_SPEED - speed));
+			if (isRunning) {
+				count++;
+				this->moveToDown();
+			}
+		}
+	});
+}
+
+void Tetris::stopGameTimer() {
+	this->isRunning = false;
+	delete this;
+}
+
+void Tetris::setSpeed(int speed) {
+	if (MAX_SPEED < speed) {
+		this->speed = MAX_SPEED;
+	}
+
+	if (MIN_SPEED > speed) {
+		this->speed = MIN_SPEED;
+	}
 }
