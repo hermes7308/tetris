@@ -83,7 +83,33 @@ void Tetris::input(StageContext *context) {
 }
 
 void Tetris::physics(StageContext *context) {
+	// remove full row
+	removeFullRow();
+}
 
+void Tetris::removeFullRow() {
+	for (int row = 0; row < ROWS; row++) {
+		if (isFullRow(row)) {
+			for (int index = row; index > 0; index--) {
+				for (int col = 0; col < COLS; col++) {
+					stackedBlocks[index][col] = stackedBlocks[index - 1][col];
+					stackedBlocks[index - 1][col] = 0;
+				}
+			}
+		}
+	}
+}
+
+bool Tetris::isFullRow(int row) const {
+	bool isFull = true;
+
+	for (int col = 0; col < COLS; col++) {
+		if (stackedBlocks[row][col] == 0) {
+			isFull = false;
+			break;
+		}
+	}
+	return isFull;
 }
 
 void Tetris::drawBorder() {

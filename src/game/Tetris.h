@@ -95,6 +95,10 @@ private:
 	bool isAllowedBlock();
 
 	void stackBlock(Block *block);
+
+	void removeFullRow();
+
+	bool isFullRow(int row) const;
 };
 
 
