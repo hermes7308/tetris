@@ -47,7 +47,7 @@ private:
 	const int startX = groundX + 4;
 	const int startY = groundY + 2;
 
-	Block *currentBlock = new BlockZ();
+	Block *currentBlock = new BlockI();
 
 	// block queue
 	const int blockQueueSize = 5;

@@ -37,3 +37,8 @@ Block::~Block() {
 
 }
 
+Block::Block(const Block::Coordinate &coordinate, Block::BlockType blockType, BlockColor color) {
+	this->coordinate = coordinate;
+	this->blockType = blockType;
+	this->color = color;
+}

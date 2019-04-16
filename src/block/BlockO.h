@@ -8,7 +8,11 @@
 
 #include "Block.h"
 
-class BlockO : public Block{
+class BlockO : public Block {
+public:
+	BlockO() : Block({0, 0}, Block::O, BlockColor::YELLOW) {
+
+	};
 protected:
 	Coordinate getBlock1() override;
 
