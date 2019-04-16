@@ -1,7 +1,11 @@
 
 #include <ncurses.h>
 #include <iostream>
-#include "game/IntroPage.h"
+#include <vector>
+#include "game/IntroStage.h"
+#include "game/Tetris.h"
+
+using namespace std;
 
 void setup() {
 	setlocale(LC_ALL, "");
@@ -20,22 +24,18 @@ void destroy() {
 int main() {
 	// setup
 	setup();
+	vector<Stage *> stages;
+	stages.push_back(new IntroStage);
+	stages.push_back(new Tetris);
 
 	// intro
-	// player one, player two
-	auto *introPage = new IntroPage();
-	IntroPage::Cursor result = introPage->Start();
+	auto *context = new StageContext();
+	for (Stage *stage : stages) {
+		if (context->status == StageContext::Status::STOP) {
+			break;
+		}
 
-	delete introPage;
-
-	switch (result) {
-		case IntroPage::START:
-			mvprintw(0, 0, "Start Tetris");
-			break;
-		case IntroPage::EXIT:
-			break;
-		default:
-			break;
+		stage->Start(context);
 	}
 
 	// destroy

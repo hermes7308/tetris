@@ -3,27 +3,10 @@
 //
 
 #include <ncurses.h>
-#include "IntroPage.h"
+#include "IntroStage.h"
 
 
-IntroPage::Cursor IntroPage::Start() {
-	while (this->result == Cursor::NONE_SELECTED) {
-		// render
-		render();
-
-		// input
-		input();
-
-		// physics
-		physics();
-	}
-
-	return result;
-}
-
-void IntroPage::render() {
-	clear();
-
+void IntroStage::draw(StageContext *context) {
 	int currentX = (WIDTH - TITLE_COLS) / 2;
 	int currentY = 3;
 
@@ -56,7 +39,7 @@ void IntroPage::render() {
 	}
 }
 
-void IntroPage::input() {
+void IntroStage::input(StageContext *context) {
 	// Up, (27, 91, 65)
 	// Down, (27, 91, 66)
 	key = getch();
@@ -81,10 +64,12 @@ void IntroPage::input() {
 	if (key == 10) {
 		switch (currentCursor) {
 			case Cursor::START:
-				result = IntroPage::START;
+				context->status = StageContext::CONTINUE;
+				Stop();
 				break;
 			case Cursor::EXIT:
-				result = IntroPage::EXIT;
+				context->status = StageContext::STOP;
+				Stop();
 				break;
 			default:
 				break;
@@ -92,10 +77,11 @@ void IntroPage::input() {
 	}
 }
 
-void IntroPage::physics() {
+void IntroStage::physics(StageContext *context) {
+
 }
 
-void IntroPage::up() {
+void IntroStage::up() {
 	currentCursor--;
 
 	if (currentCursor < 0) {
@@ -103,7 +89,7 @@ void IntroPage::up() {
 	}
 }
 
-void IntroPage::down() {
+void IntroStage::down() {
 	currentCursor++;
 
 	if (currentCursor >= Cursor::COUNT) {

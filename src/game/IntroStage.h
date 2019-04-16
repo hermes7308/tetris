@@ -6,26 +6,27 @@
 #define TETRIS_INTROPAGE_H
 
 #include <string>
+#include "../core/Stage.h"
 
 static const int UP = 65;
 static const int DOWN = 66;
 
-class IntroPage {
+class IntroStage : public Stage {
 public:
 	enum Cursor {
-		NONE_SELECTED = -1,
 		START = 0,
 		EXIT,
 
 		COUNT
 	};
+protected:
+	void draw(StageContext *context) override;
 
-	Cursor Start();
+	void input(StageContext *context) override;
+
+	void physics(StageContext *context) override;
 
 private:
-	const int WIDTH = 80;
-	const int HEIGHT = 24;
-
 	const char *TITLE[6] = {
 			"████████╗███████╗████████╗██████╗ ██╗███████╗", // 45
 			"╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝",
@@ -40,23 +41,16 @@ private:
 	const char *AUTHOR = "Created by HERMES";
 
 	const char *CURSOR_CHARACTER = "➡"; // character
-	Cursor result = NONE_SELECTED;
 	int currentCursor = START;
-	int startY;
-	int startX;
-	int exitY;
+	int startY{};
+	int startX{};
+	int exitY{};
 
-	int key;
+	int key{};
 
 	void up();
 
 	void down();
-
-	void render();
-
-	void input();
-
-	void physics();
 };
 
 
