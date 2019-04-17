@@ -31,6 +31,11 @@ public:
 		MOVED,
 	};
 
+	enum RotateStatus {
+		NOT_ROTATED,
+		ROTATED
+	};
+
 	Tetris();
 
 	virtual ~Tetris();
@@ -100,7 +105,7 @@ private:
 
 	void moveToDestination();
 
-	void rotate();
+	RotateStatus rotate();
 
 	// block queue
 	Block *createBlock();
