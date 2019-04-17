@@ -128,6 +128,8 @@ private:
 
 
 	void setSpeed(int speed);
+
+	void rotateBlock();
 };
 
 

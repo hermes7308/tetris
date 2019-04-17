@@ -79,25 +79,28 @@ void Tetris::input(StageContext *context) {
 	}
 
 	if (key == Z_UPPER || key == Z_LOWER) {
-		if (RotateStatus::ROTATED == rotate()) {
+		rotateBlock();
+		return;
+	}
+}
+
+void Tetris::rotateBlock() {
+	if (ROTATED == rotate()) {
+		return;
+	}
+
+	// move left
+	if (MOVED == moveToLeft()) {
+		if (ROTATED == rotate()) {
 			return;
 		}
+	}
 
-		// move left
-		if (MoveStatus::MOVED == moveToLeft()) {
-			if (RotateStatus::ROTATED == rotate()) {
-				return;
-			}
+	// move right
+	if (MOVED == moveToRight()) {
+		if (ROTATED == rotate()) {
+			return;
 		}
-
-		// move right
-		if (MoveStatus::MOVED == moveToRight()) {
-			if (RotateStatus::ROTATED == rotate()) {
-				return;
-			}
-		}
-
-		return;
 	}
 }
 
