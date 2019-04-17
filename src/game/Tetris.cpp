@@ -30,8 +30,6 @@ Tetris::Tetris() {
 	initGameTimer();
 }
 
-void Tetris::initGameTimer() { beforeGameTime = getCurrentMilliseconds(); }
-
 Tetris::~Tetris() {
 	delete currentBlock;
 
@@ -86,26 +84,6 @@ void Tetris::input(StageContext *context) {
 	}
 }
 
-void Tetris::rotateBlock() {
-	if (ROTATED == rotate()) {
-		return;
-	}
-
-	// move left
-	if (MOVED == moveToLeft()) {
-		if (ROTATED == rotate()) {
-			return;
-		}
-	}
-
-	// move right
-	if (MOVED == moveToRight()) {
-		if (ROTATED == rotate()) {
-			return;
-		}
-	}
-}
-
 void Tetris::physics(StageContext *context) {
 	// remove full row
 	removeFullRow();
@@ -116,31 +94,6 @@ void Tetris::physics(StageContext *context) {
 		beforeGameTime = currentTime;
 		moveToDown();
 	}
-}
-
-void Tetris::removeFullRow() {
-	for (int row = 0; row < ROWS; row++) {
-		if (isFullRow(row)) {
-			for (int index = row; index > 0; index--) {
-				for (int col = 0; col < COLS; col++) {
-					stackedBlocks[index][col] = stackedBlocks[index - 1][col];
-					stackedBlocks[index - 1][col] = 0;
-				}
-			}
-		}
-	}
-}
-
-bool Tetris::isFullRow(int row) const {
-	bool isFull = true;
-
-	for (int col = 0; col < COLS; col++) {
-		if (stackedBlocks[row][col] == 0) {
-			isFull = false;
-			break;
-		}
-	}
-	return isFull;
 }
 
 void Tetris::drawBorder() {
@@ -270,6 +223,26 @@ void Tetris::moveToDestination() {
 	}
 }
 
+void Tetris::rotateBlock() {
+	if (ROTATED == rotate()) {
+		return;
+	}
+
+	// move left
+	if (MOVED == moveToLeft()) {
+		if (ROTATED == rotate()) {
+			return;
+		}
+	}
+
+	// move right
+	if (MOVED == moveToRight()) {
+		if (ROTATED == rotate()) {
+			return;
+		}
+	}
+}
+
 Tetris::RotateStatus Tetris::rotate() {
 	currentBlock->rotateClockwise();
 
@@ -279,6 +252,19 @@ Tetris::RotateStatus Tetris::rotate() {
 	}
 
 	return ROTATED;
+}
+
+void Tetris::removeFullRow() {
+	for (int row = 0; row < ROWS; row++) {
+		if (isFullRow(row)) {
+			for (int index = row; index > 0; index--) {
+				for (int col = 0; col < COLS; col++) {
+					stackedBlocks[index][col] = stackedBlocks[index - 1][col];
+					stackedBlocks[index - 1][col] = 0;
+				}
+			}
+		}
+	}
 }
 
 Block *Tetris::createBlock() {
@@ -320,7 +306,6 @@ void Tetris::loadNewBlock() {
 	currentBlock = getBlockFromQueue();
 }
 
-
 bool Tetris::isAllowedBlock() {
 	vector<Block::Coordinate> coordinates = currentBlock->getBlockCoordinates();
 
@@ -352,6 +337,18 @@ void Tetris::stackBlock(Block *block) {
 	delete block;
 }
 
+bool Tetris::isFullRow(int row) const {
+	bool isFull = true;
+
+	for (int col = 0; col < COLS; col++) {
+		if (stackedBlocks[row][col] == 0) {
+			isFull = false;
+			break;
+		}
+	}
+	return isFull;
+}
+
 void Tetris::setSpeed(int speed) {
 	if (MAX_SPEED < speed) {
 		this->speed = MAX_SPEED;
@@ -361,3 +358,5 @@ void Tetris::setSpeed(int speed) {
 		this->speed = MIN_SPEED;
 	}
 }
+
+void Tetris::initGameTimer() { beforeGameTime = getCurrentMilliseconds(); }

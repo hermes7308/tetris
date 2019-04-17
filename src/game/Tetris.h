@@ -40,8 +40,6 @@ public:
 
 	virtual ~Tetris();
 
-	MoveStatus moveToDown();
-
 protected:
 	void draw(StageContext *context) override;
 
@@ -103,7 +101,11 @@ private:
 
 	MoveStatus moveToLeft();
 
+	MoveStatus moveToDown();
+
 	void moveToDestination();
+
+	void rotateBlock();
 
 	RotateStatus rotate();
 
@@ -125,11 +127,7 @@ private:
 	bool isFullRow(int row) const;
 
 	// gameTimer
-
-
 	void setSpeed(int speed);
-
-	void rotateBlock();
 
 	void initGameTimer();
 };
