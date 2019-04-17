@@ -6,9 +6,11 @@
 #define TETRIS_STAGE_H
 
 #include <thread>
+#include <chrono>
 #include "StageContext.h"
 
 using namespace std;
+using namespace chrono;
 
 class Stage {
 public:
@@ -24,6 +26,8 @@ public:
 
 protected:
 	bool isRunning = true;
+
+	milliseconds getCurrentMilliseconds();
 
 	virtual void draw(StageContext *context) = 0;
 

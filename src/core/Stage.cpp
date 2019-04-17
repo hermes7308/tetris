@@ -35,3 +35,8 @@ void Stage::render(StageContext *context) {
 
 	refresh();
 }
+
+milliseconds Stage::getCurrentMilliseconds() {
+	milliseconds ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+	return ms;
+}

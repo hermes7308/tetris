@@ -25,6 +25,9 @@ Tetris::Tetris() {
 	}
 
 	currentBlock = createBlock();
+
+	// init gameTimer
+	beforeGameTime = getCurrentMilliseconds();
 }
 
 Tetris::~Tetris() {
@@ -84,6 +87,15 @@ void Tetris::input(StageContext *context) {
 void Tetris::physics(StageContext *context) {
 	// remove full row
 	removeFullRow();
+
+	// game timer
+	milliseconds currentTime = getCurrentMilliseconds();
+
+	unsigned int gameDelay = static_cast<unsigned int>((currentTime - beforeGameTime).count());
+	if (gameDelay > (MAX_SPEED - speed)){
+		beforeGameTime = currentTime;
+		moveToDown();
+	}
 }
 
 void Tetris::removeFullRow() {

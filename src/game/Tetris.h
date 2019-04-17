@@ -74,9 +74,9 @@ private:
 	const int MAX_SPEED = 1000;
 	const int MIN_SPEED = 100;
 
-	thread gameTimerThread;
+	milliseconds beforeGameTime;
+
 	int speed = MIN_SPEED;
-	bool isRunning = true;
 
 	// draw
 	void drawBorder();
@@ -84,6 +84,8 @@ private:
 	void drawStackedBlock();
 
 	void drawCurrentBlock();
+
+	void drawMetaInfo() const;
 
 	// input event
 	MoveStatus moveToUp();
@@ -114,9 +116,9 @@ private:
 	bool isFullRow(int row) const;
 
 	// gameTimer
-	void setSpeed(int speed);
 
-	void drawMetaInfo() const;
+
+	void setSpeed(int speed);
 };
 
 
