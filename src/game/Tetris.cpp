@@ -27,8 +27,10 @@ Tetris::Tetris() {
 	currentBlock = createBlock();
 
 	// init gameTimer
-	beforeGameTime = getCurrentMilliseconds();
+	initGameTimer();
 }
+
+void Tetris::initGameTimer() { beforeGameTime = getCurrentMilliseconds(); }
 
 Tetris::~Tetris() {
 	delete currentBlock;
@@ -254,15 +256,16 @@ Tetris::MoveStatus Tetris::moveToDown() {
 		stackBlock(currentBlock);
 		loadNewBlock();
 		addBlockToQueue();
+		initGameTimer();
 
-		return MOVED;
+		return NOT_MOVED;
 	}
 
-	return NOT_MOVED;
+	return MOVED;
 }
 
 void Tetris::moveToDestination() {
-	while (MoveStatus::NOT_MOVED == moveToDown()) {
+	while (MoveStatus::MOVED == moveToDown()) {
 
 	}
 }

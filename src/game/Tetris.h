@@ -130,6 +130,8 @@ private:
 	void setSpeed(int speed);
 
 	void rotateBlock();
+
+	void initGameTimer();
 };
 
 
