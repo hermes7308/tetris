@@ -87,6 +87,10 @@ private:
 
 	void drawMetaInfo() const;
 
+	void drawBasket(int x, int y, int width, int height) const;
+
+	void drawRect(int x, int y, int width, int height) const;
+
 	// input event
 	MoveStatus moveToUp();
 

@@ -27,6 +27,8 @@ public:
 protected:
 	bool isRunning = true;
 
+	milliseconds currentTime;
+
 	milliseconds getCurrentMilliseconds();
 
 	virtual void draw(StageContext *context) = 0;

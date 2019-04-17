@@ -13,6 +13,9 @@ Stage::~Stage() {
 void Stage::Start(StageContext *context) {
 	// render fix
 	while (isRunning) {
+		// set current time
+		currentTime = getCurrentMilliseconds();
+
 		// draw
 		render(context);
 

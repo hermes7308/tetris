@@ -89,10 +89,8 @@ void Tetris::physics(StageContext *context) {
 	removeFullRow();
 
 	// game timer
-	milliseconds currentTime = getCurrentMilliseconds();
-
 	unsigned int gameDelay = static_cast<unsigned int>((currentTime - beforeGameTime).count());
-	if (gameDelay > (MAX_SPEED - speed)){
+	if (gameDelay > (MAX_SPEED - speed)) {
 		beforeGameTime = currentTime;
 		moveToDown();
 	}
@@ -124,17 +122,24 @@ bool Tetris::isFullRow(int row) const {
 }
 
 void Tetris::drawBorder() {
-	for (int row = 0; row < 22; row++) {
-		for (int col = 0; col < 12; col++) {
-			if (row == 0 || row == 21) {
-				mvprintw(row + borderY, col + borderX, "%s", BLOCK_CHARACTER);
-			}
+	drawBasket(borderX, borderY, 12, 22);
+}
 
-			if (col == 0 || col == 11) {
-				mvprintw(row + borderY, col + borderX, "%s", BLOCK_CHARACTER);
-			}
-		}
+void Tetris::drawBasket(int x, int y, int width, int height) const {
+	// draw left & right line
+	for (int row = 0; row < height - 1; row++) {
+		mvaddch(y + row, x, ACS_VLINE);
+		mvaddch(y + row, x + width - 1, ACS_VLINE);
 	}
+
+	// draw top & under line
+	for (int col = 1; col < width - 1; col++) {
+		mvaddch(y + height - 1, x + col, ACS_HLINE);
+	}
+
+	// draw corners line
+	mvaddch(y + height - 1, x, ACS_LLCORNER);
+	mvaddch(y + height - 1, x + width - 1, ACS_LRCORNER);
 }
 
 void Tetris::drawStackedBlock() {
@@ -157,9 +162,34 @@ void Tetris::drawCurrentBlock() {
 }
 
 void Tetris::drawMetaInfo() const {
-	mvprintw(1, 14, "Degree: %d", currentBlock->degree);
-	mvprintw(2, 14, "key : %d", key);
-	mvprintw(3, 14, "time : %ld", time(0));
+	int x = 14;
+	int y = 1;
+
+	drawRect(x++, y++, 20, 4);
+
+	mvprintw(y++, x, "Degree: %d", currentBlock->degree);
+	mvprintw(y++, x, "time : %ld", time(0));
+}
+
+void Tetris::drawRect(int x, int y, int width, int height) const {
+	// draw left & right line
+	for (int row = 1; row < height - 1; row++) {
+		mvaddch(y + row, x, ACS_VLINE);
+		mvaddch(y + row, x + width - 1, ACS_VLINE);
+	}
+
+	// draw top & under line
+	for (int col = 1; col < width - 1; col++) {
+		mvaddch(y, x + col, ACS_HLINE);
+		mvaddch(y + height - 1, x + col, ACS_HLINE);
+	}
+
+	// draw corners line
+	mvaddch(y, x, ACS_ULCORNER);
+	mvaddch(y, x + width - 1, ACS_URCORNER);
+
+	mvaddch(y + height - 1, x, ACS_LLCORNER);
+	mvaddch(y + height - 1, x + width - 1, ACS_LRCORNER);
 }
 
 Tetris::MoveStatus Tetris::moveToUp() {
