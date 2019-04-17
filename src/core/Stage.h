@@ -23,6 +23,8 @@ public:
 	void Stop();
 
 protected:
+	bool isRunning = true;
+
 	virtual void draw(StageContext *context) = 0;
 
 	virtual void input(StageContext *context) = 0;
@@ -30,10 +32,6 @@ protected:
 	virtual void physics(StageContext *context) = 0;
 
 private:
-	bool isRunning = true;
-
-	thread inputThread;
-
 	void render(StageContext *context);
 };
 

@@ -147,6 +147,7 @@ void Tetris::drawCurrentBlock() {
 void Tetris::drawMetaInfo() const {
 	mvprintw(1, 14, "Degree: %d", currentBlock->degree);
 	mvprintw(2, 14, "key : %d", key);
+	mvprintw(3, 14, "time : %ld", time(0));
 }
 
 Tetris::MoveStatus Tetris::moveToUp() {

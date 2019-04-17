@@ -14,6 +14,7 @@ void setup() {
 	initscr();
 	clear();
 	noecho();
+	nodelay(stdscr, TRUE);
 	cbreak();
 	curs_set(0);
 }
