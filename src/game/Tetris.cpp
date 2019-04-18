@@ -233,12 +233,37 @@ void Tetris::rotateBlock() {
 		if (ROTATED == rotate()) {
 			return;
 		}
+		moveToRight();
 	}
 
 	// move right
 	if (MOVED == moveToRight()) {
 		if (ROTATED == rotate()) {
 			return;
+		}
+		moveToLeft();
+	}
+
+	// if block is I
+	if (currentBlock->blockType == Block::BlockType::I) {
+		if (MOVED == moveToLeft()) {
+			if (MOVED == moveToLeft()) {
+				if (ROTATED == rotate()) {
+					return;
+				}
+				moveToRight();
+			}
+			moveToRight();
+		}
+
+		if (MOVED == moveToRight()) {
+			if (MOVED == moveToRight()) {
+				if (ROTATED == rotate()) {
+					return;
+				}
+				moveToLeft();
+			}
+			moveToLeft();
 		}
 	}
 }
