@@ -97,7 +97,7 @@ void Tetris::physics(StageContext *context) {
 }
 
 void Tetris::drawBorder() {
-	drawBasket(borderX, borderY, 12, 22);
+	drawBasket(borderX, borderY, COLS + 2, ROWS + 2);
 }
 
 void Tetris::drawBasket(int x, int y, int width, int height) const {
@@ -137,8 +137,8 @@ void Tetris::drawCurrentBlock() {
 }
 
 void Tetris::drawMetaInfo() const {
-	int x = 14;
-	int y = 1;
+	int x = borderX + COLS + 2;
+	int y = borderY;
 
 	drawRect(x++, y++, 20, 4);
 

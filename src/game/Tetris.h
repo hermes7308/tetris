@@ -49,20 +49,20 @@ protected:
 
 private:
 	static const int ROWS = 20;
-	static const int COLS = 10;
+	static const int COLS = 20;
 
 	int stackedBlocks[ROWS][COLS];
 
 	// draw
 	// block
-	const int borderX = 0;
+	const int borderX = (WIDTH - COLS) / 2;
 	const int borderY = 2;
 	// ground
 	const int groundX = borderX + 1;
 	const int groundY = borderY + 1;
 	// start
-	const int startX = groundX + 3;
-	const int startY = 1;
+	const int startX = (COLS / 2);
+	const int startY = 0;
 
 	Block *currentBlock = nullptr;
 
