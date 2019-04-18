@@ -28,6 +28,16 @@ Tetris::Tetris() {
 
 	// init gameTimer
 	initGameTimer();
+
+	// init color
+	start_color();
+	init_pair(Block::BlockColor::RED, COLOR_RED, COLOR_BLACK);
+	init_pair(Block::BlockColor::GREEN, COLOR_GREEN, COLOR_BLACK);
+	init_pair(Block::BlockColor::YELLOW, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(Block::BlockColor::BLUE, COLOR_BLUE, COLOR_BLACK);
+	init_pair(Block::BlockColor::MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(Block::BlockColor::CYAN, COLOR_CYAN, COLOR_BLACK);
+	init_pair(Block::BlockColor::WHITE, COLOR_WHITE, COLOR_BLACK);
 }
 
 Tetris::~Tetris() {
@@ -118,7 +128,9 @@ void Tetris::drawStackedBlock() {
 		for (int col = 0; col < COLS; col++) {
 			int color = stackedBlocks[row][col];
 			if (color != 0) {
+				attron(COLOR_PAIR(color));
 				mvprintw(row + groundY, col + groundX, "%s", BLOCK_CHARACTER);
+				attroff(COLOR_PAIR(color));
 			}
 		}
 	}
@@ -127,7 +139,9 @@ void Tetris::drawStackedBlock() {
 void Tetris::drawCurrentBlock() {
 	auto coordinates = currentBlock->getBlockCoordinates();
 	for (Block::Coordinate coordinate : coordinates) {
+		attron(COLOR_PAIR(currentBlock->color));
 		mvprintw(groundY + coordinate.y, groundX + coordinate.x, "%s", BLOCK_CHARACTER);
+		attroff(COLOR_PAIR(currentBlock->color));
 	}
 	coordinates.clear();
 }
