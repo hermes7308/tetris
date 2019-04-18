@@ -43,21 +43,16 @@ void IntroStage::input(StageContext *context) {
 	// Up, (27, 91, 65)
 	// Down, (27, 91, 66)
 	key = getch();
-	if (key == 27) {
-		key = getch();
-		if (key == 91) {
-			key = getch();
-			switch (key) {
-				case UP:
-					up();
-					break;
-				case DOWN:
-					down();
-					break;
-				default:
-					break;
-			}
-		}
+	if (key == ERR) {
+		return;
+	}
+	switch (key) {
+		case UP:
+			up();
+			return;
+		case DOWN:
+			down();
+			return;
 	}
 
 	// Enter, (10)

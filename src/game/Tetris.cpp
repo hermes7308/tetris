@@ -50,27 +50,23 @@ void Tetris::input(StageContext *context) {
 	// Right, (27, 91, 67)
 	// Left, (27, 91, 68)
 	key = getch();
-	if (key == 27) {
-		key = getch();
-		if (key == 91) {
-			key = getch();
-			switch (key) {
-				case UP:
-					moveToUp();
-					return;
-				case DOWN:
-					moveToDown();
-					return;
-				case LEFT:
-					moveToLeft();
-					return;
-				case RIGHT:
-					moveToRight();
-					return;
-				default:
-					return;
-			}
-		}
+	if (key == ERR) {
+		return;
+	}
+
+	switch (key) {
+		case UP:
+			moveToUp();
+			return;
+		case DOWN:
+			moveToDown();
+			return;
+		case LEFT:
+			moveToLeft();
+			return;
+		case RIGHT:
+			moveToRight();
+			return;
 	}
 
 	if (key == SPACE) {

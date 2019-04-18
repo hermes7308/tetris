@@ -11,6 +11,8 @@ Stage::~Stage() {
 }
 
 void Stage::Start(StageContext *context) {
+	isRunning = true;
+
 	// render fix
 	while (isRunning) {
 		// set current time
