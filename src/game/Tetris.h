@@ -41,6 +41,8 @@ public:
 	virtual ~Tetris();
 
 protected:
+	void drawStatic(StageContext *context) override;
+
 	void draw(StageContext *context) override;
 
 	void input(StageContext *context) override;
@@ -48,13 +50,37 @@ protected:
 	void physics(StageContext *context) override;
 
 private:
-	static const int ROWS = 20;
+	static const int ROWS = 22;
 	static const int COLS = 20;
 
 	int stackedBlocks[ROWS][COLS];
 
 	// draw
-	// block
+	// border
+	const int TETRIS_BORDER_HEIGHT = ROWS + 2;
+	const int TETRIS_BORDER_WIDTH = COLS + 2;
+	const int TETRIS_BORDER_Y = 0;
+	const int TETRIS_BORDER_X = (WIDTH - TETRIS_BORDER_WIDTH) / 2;
+	WINDOW *tetrisBorderWindow;
+
+	const int TETRIS_GAME_GROUND_HEIGHT = ROWS;
+	const int TETRIS_GAME_GROUND_WIDTH = COLS;
+	const int TETRIS_GAME_GROUND_Y = TETRIS_BORDER_Y + 1;
+	const int TETRIS_GAME_GROUND_X = TETRIS_BORDER_X + 1;
+	WINDOW *tetrisGameGroundWindow;
+
+	const int TETRIS_META_INFO_BORDER_HEIGHT = 4;
+	const int TETRIS_META_INFO_BORDER_WIDTH = 20;
+	const int TETRIS_META_INFO_BORDER_Y = TETRIS_BORDER_Y;
+	const int TETRIS_META_INFO_BORDER_X = TETRIS_BORDER_X + TETRIS_BORDER_WIDTH + 1;
+	WINDOW *tetrisMetaInfoBorderWindow;
+
+	const int TETRIS_META_INFO_HEIGHT = TETRIS_META_INFO_BORDER_HEIGHT - 2;
+	const int TETRIS_META_INFO_WIDTH = TETRIS_META_INFO_BORDER_WIDTH - 2;
+	const int TETRIS_META_INFO_Y = TETRIS_META_INFO_BORDER_Y + 1;
+	const int TETRIS_META_INFO_X = TETRIS_BORDER_X + TETRIS_BORDER_WIDTH + 1 + 1;
+	WINDOW *tetrisMetaInfoWindow;
+
 	const int borderX = (WIDTH - COLS) / 2;
 	const int borderY = 2;
 	// ground
@@ -62,7 +88,7 @@ private:
 	const int groundY = borderY + 1;
 	// start
 	const int startX = (COLS / 2);
-	const int startY = 0;
+	const int startY = 1;
 
 	Block *currentBlock = nullptr;
 
@@ -82,17 +108,13 @@ private:
 	int speed = MIN_SPEED;
 
 	// draw
-	void drawBorder();
+	void drawTetrisGame();
 
 	void drawStackedBlock();
 
 	void drawCurrentBlock();
 
 	void drawMetaInfo() const;
-
-	void drawBasket(int x, int y, int width, int height) const;
-
-	void drawRect(int x, int y, int width, int height) const;
 
 	// input event
 	MoveStatus moveToUp();

@@ -8,8 +8,6 @@
 #include <string>
 #include "../core/Stage.h"
 
-static const int UP = 65;
-static const int DOWN = 66;
 
 class IntroStage : public Stage {
 public:
@@ -20,6 +18,14 @@ public:
 		COUNT
 	};
 protected:
+public:
+	IntroStage();
+
+	~IntroStage();
+
+protected:
+	void drawStatic(StageContext *context) override;
+
 	void draw(StageContext *context) override;
 
 	void input(StageContext *context) override;
@@ -37,20 +43,48 @@ private:
 	};
 	const int TITLE_ROWS = 6;
 	const int TITLE_COLS = 45;
+	const int TITLE_WINDOW_HEIGHT = TITLE_ROWS + 2;
+	const int TITLE_WINDOW_WIDTH = TITLE_COLS + 2;
+	const int TITLE_Y = 3;
+	const int TITLE_X = (WIDTH - TITLE_COLS) / 2;
+	WINDOW *titleWindow;
 
 	const char *AUTHOR = "Created by HERMES";
+	const int AUTHOR_WINDOW_HEIGHT = 1;
+	const int AUTHOR_WINDOW_WIDTH = 20;
+	const int AUTHOR_Y = TITLE_Y + TITLE_WINDOW_HEIGHT;
+	const int AUTHOR_X = TITLE_X + (TITLE_COLS - AUTHOR_WINDOW_WIDTH);
+	WINDOW *authorWindow;
 
-	const char *CURSOR_CHARACTER = "➡"; // character
+	const char *SELECT_OPTIONS[Cursor::COUNT] = {"Start", "Exit"};
+	const int SELECT_OPTION_HEIGHT = Cursor::COUNT;
+	const int SELECT_OPTION_WIDTH = 5;
+	const int SELECT_OPTION_Y = AUTHOR_Y + 5;
+	const int SELECT_OPTION_X = TITLE_X + 3;
+	WINDOW *selectOptionWindow;
+
+	const char *SELECT_OPTION_CURSOR_CHARACTER = "➡"; // character
+	const int SELECT_OPTION_CURSOR_HEIGHT = Cursor::COUNT;
+	const int SELECT_OPTION_CURSOR_WIDTH = 1;
+	const int SELECT_OPTION_CURSOR_Y = AUTHOR_Y + 5;
+	const int SELECT_OPTION_CURSOR_X = TITLE_X;
+	WINDOW *selectOptionCursorWindow;
+
 	int currentCursor = START;
-	int startY{};
-	int startX{};
-	int exitY{};
 
 	int key{};
 
 	void up();
 
 	void down();
+
+	void drawTitle();
+
+	void drawAuthor();
+
+	void drawSelectOption();
+
+	void drawSelectOptionCursorWindow();
 };
 
 

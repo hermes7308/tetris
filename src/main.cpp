@@ -14,9 +14,20 @@ void setup() {
 	initscr();
 	clear();
 	noecho();
-	nodelay(stdscr, TRUE);
+	timeout(TRUE);
+	keypad(stdscr, TRUE);
 	cbreak();
 	curs_set(0);
+
+	// init color
+	start_color();
+	init_pair(Block::BlockColor::RED, COLOR_RED, COLOR_BLACK);
+	init_pair(Block::BlockColor::GREEN, COLOR_GREEN, COLOR_BLACK);
+	init_pair(Block::BlockColor::YELLOW, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(Block::BlockColor::BLUE, COLOR_BLUE, COLOR_BLACK);
+	init_pair(Block::BlockColor::MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(Block::BlockColor::CYAN, COLOR_CYAN, COLOR_BLACK);
+	init_pair(Block::BlockColor::WHITE, COLOR_WHITE, COLOR_BLACK);
 }
 
 void destroy() {
@@ -26,6 +37,7 @@ void destroy() {
 int main() {
 	// setup
 	setup();
+
 	vector<Stage *> stages;
 	stages.push_back(new IntroStage());
 	stages.push_back(new Tetris());

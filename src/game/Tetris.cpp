@@ -6,38 +6,23 @@
 
 using namespace std;
 
-static const int UP = 65;
-static const int DOWN = 66;
-static const int RIGHT = 67;
-static const int LEFT = 68;
-static const int SPACE = 32;
-static const int Z_UPPER = 90;
-static const int Z_LOWER = 122;
 
 const char *Tetris::BLOCK_CHARACTER = "■";
 
 Tetris::Tetris() {
 	srand(static_cast<unsigned int>(time(0)));
 
+	currentBlock = createBlock();
+
 	// add bloc to block queue
 	for (int i = 0; i < blockQueueSize; i++) {
 		addBlockToQueue();
 	}
 
-	currentBlock = createBlock();
-
 	// init gameTimer
 	initGameTimer();
 
-	// init color
-	start_color();
-	init_pair(Block::BlockColor::RED, COLOR_RED, COLOR_BLACK);
-	init_pair(Block::BlockColor::GREEN, COLOR_GREEN, COLOR_BLACK);
-	init_pair(Block::BlockColor::YELLOW, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(Block::BlockColor::BLUE, COLOR_BLUE, COLOR_BLACK);
-	init_pair(Block::BlockColor::MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-	init_pair(Block::BlockColor::CYAN, COLOR_CYAN, COLOR_BLACK);
-	init_pair(Block::BlockColor::WHITE, COLOR_WHITE, COLOR_BLACK);
+	setFrame(20);
 }
 
 Tetris::~Tetris() {
@@ -46,45 +31,68 @@ Tetris::~Tetris() {
 	blockQueue.clear();
 }
 
+void Tetris::drawStatic(StageContext *context) {
+	clear();
+
+	// drawTetrisBorder
+	tetrisBorderWindow = newwin(TETRIS_BORDER_HEIGHT, TETRIS_BORDER_WIDTH, TETRIS_BORDER_Y, TETRIS_BORDER_X);
+	refresh();
+
+	box(tetrisBorderWindow, 0, 0);
+	wrefresh(tetrisBorderWindow);
+
+	// drawTetrisGameGroundWindow;
+	tetrisGameGroundWindow = newwin(TETRIS_GAME_GROUND_HEIGHT, TETRIS_GAME_GROUND_WIDTH, TETRIS_GAME_GROUND_Y,
+									TETRIS_GAME_GROUND_X);
+	refresh();
+
+	// drawTetrisMetaInfoBorderWindow
+	tetrisMetaInfoBorderWindow = newwin(TETRIS_META_INFO_BORDER_HEIGHT, TETRIS_META_INFO_BORDER_WIDTH,
+										TETRIS_META_INFO_BORDER_Y, TETRIS_META_INFO_BORDER_X);
+	refresh();
+
+	box(tetrisMetaInfoBorderWindow, 0, 0);
+	wrefresh(tetrisMetaInfoBorderWindow);
+
+	// drawTetrisMetaInfoWindow
+	tetrisMetaInfoWindow = newwin(TETRIS_META_INFO_HEIGHT, TETRIS_META_INFO_WIDTH, TETRIS_META_INFO_Y,
+								  TETRIS_META_INFO_X);
+	refresh();
+}
+
 void Tetris::draw(StageContext *context) {
-	drawBorder();
-	drawStackedBlock();
-	drawCurrentBlock();
+	drawTetrisGame();
 
 	drawMetaInfo();
 }
 
 void Tetris::input(StageContext *context) {
-	// Up, (27, 91, 65)
-	// Down, (27, 91, 66)
-	// Right, (27, 91, 67)
-	// Left, (27, 91, 68)
 	key = getch();
 	if (key == ERR) {
 		return;
 	}
 
 	switch (key) {
-		case UP:
+		case KEY_UP:
 			moveToUp();
 			return;
-		case DOWN:
+		case KEY_DOWN:
 			moveToDown();
 			return;
-		case LEFT:
+		case KEY_LEFT:
 			moveToLeft();
 			return;
-		case RIGHT:
+		case KEY_RIGHT:
 			moveToRight();
 			return;
 	}
 
-	if (key == SPACE) {
+	if (key == ' ') {
 		moveToDestination();
 		return;
 	}
 
-	if (key == Z_UPPER || key == Z_LOWER) {
+	if (key == 'z' || key == 'Z') {
 		rotateBlock();
 		return;
 	}
@@ -95,6 +103,7 @@ void Tetris::physics(StageContext *context) {
 	removeFullRow();
 
 	// game timer
+	milliseconds currentTime = getCurrentTime();
 	unsigned int gameDelay = static_cast<unsigned int>((currentTime - beforeGameTime).count());
 	if (gameDelay > (MAX_SPEED - speed)) {
 		beforeGameTime = currentTime;
@@ -102,25 +111,11 @@ void Tetris::physics(StageContext *context) {
 	}
 }
 
-void Tetris::drawBorder() {
-	drawBasket(borderX, borderY, COLS + 2, ROWS + 2);
-}
-
-void Tetris::drawBasket(int x, int y, int width, int height) const {
-	// draw left & right line
-	for (int row = 0; row < height - 1; row++) {
-		mvaddch(y + row, x, ACS_VLINE);
-		mvaddch(y + row, x + width - 1, ACS_VLINE);
-	}
-
-	// draw top & under line
-	for (int col = 1; col < width - 1; col++) {
-		mvaddch(y + height - 1, x + col, ACS_HLINE);
-	}
-
-	// draw corners line
-	mvaddch(y + height - 1, x, ACS_LLCORNER);
-	mvaddch(y + height - 1, x + width - 1, ACS_LRCORNER);
+void Tetris::drawTetrisGame() {
+	wclear(tetrisGameGroundWindow);
+	drawStackedBlock();
+	drawCurrentBlock();
+	wrefresh(tetrisGameGroundWindow);
 }
 
 void Tetris::drawStackedBlock() {
@@ -128,9 +123,9 @@ void Tetris::drawStackedBlock() {
 		for (int col = 0; col < COLS; col++) {
 			int color = stackedBlocks[row][col];
 			if (color != 0) {
-				attron(COLOR_PAIR(color));
-				mvprintw(row + groundY, col + groundX, "%s", BLOCK_CHARACTER);
-				attroff(COLOR_PAIR(color));
+				wattron(tetrisGameGroundWindow, COLOR_PAIR(color));
+				mvwprintw(tetrisGameGroundWindow, row, col, "%s", BLOCK_CHARACTER);
+				wattroff(tetrisGameGroundWindow, COLOR_PAIR(color));
 			}
 		}
 	}
@@ -139,42 +134,19 @@ void Tetris::drawStackedBlock() {
 void Tetris::drawCurrentBlock() {
 	auto coordinates = currentBlock->getBlockCoordinates();
 	for (Block::Coordinate coordinate : coordinates) {
-		attron(COLOR_PAIR(currentBlock->color));
-		mvprintw(groundY + coordinate.y, groundX + coordinate.x, "%s", BLOCK_CHARACTER);
-		attroff(COLOR_PAIR(currentBlock->color));
+		wattron(tetrisGameGroundWindow, COLOR_PAIR(currentBlock->color));
+		mvwprintw(tetrisGameGroundWindow, coordinate.y, coordinate.x, "%s", BLOCK_CHARACTER);
+		wattroff(tetrisGameGroundWindow, COLOR_PAIR(currentBlock->color));
 	}
 	coordinates.clear();
 }
 
 void Tetris::drawMetaInfo() const {
-	int x = borderX + COLS + 2;
-	int y = borderY;
-
-	drawRect(x++, y++, 20, 4);
-
-	mvprintw(y++, x, "Degree: %d", currentBlock->degree);
-	mvprintw(y++, x, "time : %ld", time(0));
-}
-
-void Tetris::drawRect(int x, int y, int width, int height) const {
-	// draw left & right line
-	for (int row = 1; row < height - 1; row++) {
-		mvaddch(y + row, x, ACS_VLINE);
-		mvaddch(y + row, x + width - 1, ACS_VLINE);
-	}
-
-	// draw top & under line
-	for (int col = 1; col < width - 1; col++) {
-		mvaddch(y, x + col, ACS_HLINE);
-		mvaddch(y + height - 1, x + col, ACS_HLINE);
-	}
-
-	// draw corners line
-	mvaddch(y, x, ACS_ULCORNER);
-	mvaddch(y, x + width - 1, ACS_URCORNER);
-
-	mvaddch(y + height - 1, x, ACS_LLCORNER);
-	mvaddch(y + height - 1, x + width - 1, ACS_LRCORNER);
+	int y = 0;
+	wclear(tetrisMetaInfoWindow);
+	mvwprintw(tetrisMetaInfoWindow, y++, 0, "Degree: %d", currentBlock->degree);
+	mvwprintw(tetrisMetaInfoWindow, y++, 0, "time : %ld", time(0));
+	wrefresh(tetrisMetaInfoWindow);
 }
 
 Tetris::MoveStatus Tetris::moveToUp() {
@@ -394,4 +366,4 @@ void Tetris::setSpeed(int speed) {
 	}
 }
 
-void Tetris::initGameTimer() { beforeGameTime = getCurrentMilliseconds(); }
+void Tetris::initGameTimer() { beforeGameTime = getCurrentTime(); }
