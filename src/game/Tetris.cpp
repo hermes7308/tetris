@@ -74,7 +74,7 @@ void Tetris::input(StageContext *context) {
 
 	switch (key) {
 		case KEY_UP:
-			moveToUp();
+			rotateBlock();
 			return;
 		case KEY_DOWN:
 			moveToDown();
@@ -89,11 +89,6 @@ void Tetris::input(StageContext *context) {
 
 	if (key == ' ') {
 		moveToDestination();
-		return;
-	}
-
-	if (key == 'z' || key == 'Z') {
-		rotateBlock();
 		return;
 	}
 }
@@ -147,17 +142,6 @@ void Tetris::drawMetaInfo() const {
 	mvwprintw(tetrisMetaInfoWindow, y++, 0, "Degree: %d", currentBlock->degree);
 	mvwprintw(tetrisMetaInfoWindow, y++, 0, "time : %ld", time(0));
 	wrefresh(tetrisMetaInfoWindow);
-}
-
-Tetris::MoveStatus Tetris::moveToUp() {
-	currentBlock->coordinate.y--;
-
-	if (!isAllowedBlock()) {
-		currentBlock->coordinate.y++;
-		return NOT_MOVED;
-	}
-
-	return MOVED;
 }
 
 Tetris::MoveStatus Tetris::moveToRight() {

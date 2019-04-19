@@ -50,8 +50,8 @@ protected:
 	void physics(StageContext *context) override;
 
 private:
-	static const int ROWS = 22;
-	static const int COLS = 20;
+	static const int ROWS = 20;
+	static const int COLS = 10;
 
 	int stackedBlocks[ROWS][COLS];
 
@@ -81,11 +81,6 @@ private:
 	const int TETRIS_META_INFO_X = TETRIS_BORDER_X + TETRIS_BORDER_WIDTH + 1 + 1;
 	WINDOW *tetrisMetaInfoWindow;
 
-	const int borderX = (WIDTH - COLS) / 2;
-	const int borderY = 2;
-	// ground
-	const int groundX = borderX + 1;
-	const int groundY = borderY + 1;
 	// start
 	const int startX = (COLS / 2);
 	const int startY = 1;
@@ -117,8 +112,6 @@ private:
 	void drawMetaInfo() const;
 
 	// input event
-	MoveStatus moveToUp();
-
 	MoveStatus moveToRight();
 
 	MoveStatus moveToLeft();
