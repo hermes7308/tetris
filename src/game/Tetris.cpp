@@ -12,12 +12,11 @@ const char *Tetris::BLOCK_CHARACTER = "■";
 Tetris::Tetris() {
 	srand(static_cast<unsigned int>(time(0)));
 
-	currentBlock = createBlock();
-
 	// add bloc to block queue
-	for (int i = 0; i < blockQueueSize; i++) {
+	for (int i = 0; i < blockQueueSize + 1; i++) {
 		addBlockToQueue();
 	}
+	loadNewBlock();
 
 	// init gameTimer
 	initGameTimer();
@@ -116,39 +115,57 @@ void Tetris::drawTetrisGame() {
 void Tetris::drawStackedBlock() {
 	for (int row = 0; row < ROWS; row++) {
 		for (int col = 0; col < COLS; col++) {
-			int color = stackedBlocks[row][col];
-			if (color != 0) {
-				wattron(tetrisGameGroundWindow, COLOR_PAIR(color));
+			auto blockCell = stackedBlocks[row][col];
+			if (blockCell.color != Block::Color::EMPTY) {
+				wattron(tetrisGameGroundWindow, COLOR_PAIR(blockCell.color));
 				mvwprintw(tetrisGameGroundWindow, row, col, "%s", BLOCK_CHARACTER);
-				wattroff(tetrisGameGroundWindow, COLOR_PAIR(color));
+				wattroff(tetrisGameGroundWindow, COLOR_PAIR(blockCell.color));
 			}
 		}
 	}
 }
 
 void Tetris::drawCurrentBlock() {
-	auto coordinates = currentBlock->getBlockCoordinates();
-	for (Block::Coordinate coordinate : coordinates) {
-		wattron(tetrisGameGroundWindow, COLOR_PAIR(currentBlock->color));
-		mvwprintw(tetrisGameGroundWindow, coordinate.y, coordinate.x, "%s", BLOCK_CHARACTER);
-		wattroff(tetrisGameGroundWindow, COLOR_PAIR(currentBlock->color));
+	auto blockCells = currentBlock->getBlockCells();
+	for (auto blockCell : blockCells) {
+		wattron(tetrisGameGroundWindow, COLOR_PAIR(blockCell.color));
+		mvwprintw(tetrisGameGroundWindow, blockCell.coordinate.y, blockCell.coordinate.x, "%s", BLOCK_CHARACTER);
+		wattroff(tetrisGameGroundWindow, COLOR_PAIR(blockCell.color));
 	}
-	coordinates.clear();
+
+	blockCells.clear();
 }
 
 void Tetris::drawMetaInfo() const {
 	int y = 0;
 	wclear(tetrisMetaInfoWindow);
-	mvwprintw(tetrisMetaInfoWindow, y++, 0, "Degree: %d", currentBlock->degree);
 	mvwprintw(tetrisMetaInfoWindow, y++, 0, "time : %ld", time(0));
+	mvwprintw(tetrisMetaInfoWindow, y++, 0, "y : %d", currentBlock->getCurrentCoordinate().y);
+	mvwprintw(tetrisMetaInfoWindow, y++, 0, "x : %d", currentBlock->getCurrentCoordinate().x);
+
+	mvwprintw(tetrisMetaInfoWindow, y++, 0, "BlockType : %d", currentBlock->getBlockType());
+
+
+	auto matrix = currentBlock->getMatrix();
+	for (int row = 0; row < currentBlock->getMatrixSize(); row++) {
+		for (int col = 0; col < currentBlock->getMatrixSize(); col++) {
+			if (matrix[row][col].color == Block::Color::EMPTY) {
+				mvwprintw(tetrisMetaInfoWindow, y, col * 2, "0");
+			} else {
+				mvwprintw(tetrisMetaInfoWindow, y, col * 2, "1");
+			}
+		}
+		y++;
+	}
+
 	wrefresh(tetrisMetaInfoWindow);
 }
 
 Tetris::MoveStatus Tetris::moveToRight() {
-	currentBlock->coordinate.x++;
+	currentBlock->moveToRight();
 
 	if (!isAllowedBlock()) {
-		currentBlock->coordinate.x--;
+		currentBlock->moveToLeft();
 		return NOT_MOVED;
 	}
 
@@ -156,10 +173,10 @@ Tetris::MoveStatus Tetris::moveToRight() {
 }
 
 Tetris::MoveStatus Tetris::moveToLeft() {
-	currentBlock->coordinate.x--;
+	currentBlock->moveToLeft();
 
 	if (!isAllowedBlock()) {
-		currentBlock->coordinate.x++;
+		currentBlock->moveToRight();
 		return NOT_MOVED;
 	}
 
@@ -167,10 +184,10 @@ Tetris::MoveStatus Tetris::moveToLeft() {
 }
 
 Tetris::MoveStatus Tetris::moveToDown() {
-	currentBlock->coordinate.y++;
+	currentBlock->moveToDown();
 
 	if (!isAllowedBlock()) {
-		currentBlock->coordinate.y--;
+		currentBlock->moveToUp();
 
 		stackBlock(currentBlock);
 		loadNewBlock();
@@ -210,8 +227,7 @@ void Tetris::rotateBlock() {
 		moveToLeft();
 	}
 
-	// if block is I
-	if (currentBlock->blockType == Block::BlockType::I) {
+	if (Block::BlockType::I == currentBlock->getBlockType()) {
 		if (MOVED == moveToLeft()) {
 			if (MOVED == moveToLeft()) {
 				if (ROTATED == rotate()) {
@@ -251,7 +267,7 @@ void Tetris::removeFullRow() {
 			for (int index = row; index > 0; index--) {
 				for (int col = 0; col < COLS; col++) {
 					stackedBlocks[index][col] = stackedBlocks[index - 1][col];
-					stackedBlocks[index - 1][col] = 0;
+					stackedBlocks[index - 1][col] = Block::BlockCell{};
 				}
 			}
 		}
@@ -263,19 +279,19 @@ Block *Tetris::createBlock() {
 
 	switch (blockType) {
 		case Block::BlockType::I:
-			return new BlockI(startX, startY);
+			return new BlockI();
 		case Block::BlockType::J:
-			return new BlockJ(startX, startY);
+			return new BlockJ();
 		case Block::BlockType::L:
-			return new BlockL(startX, startY);
+			return new BlockL();
 		case Block::BlockType::O:
-			return new BlockO(startX, startY);
+			return new BlockO();
 		case Block::BlockType::S:
-			return new BlockS(startX, startY);
+			return new BlockS();
 		case Block::BlockType::T:
-			return new BlockT(startX, startY);
+			return new BlockT();
 		case Block::BlockType::Z:
-			return new BlockZ(startX, startY);
+			return new BlockZ();
 		default:
 			return nullptr;
 	}
@@ -298,21 +314,20 @@ void Tetris::loadNewBlock() {
 }
 
 bool Tetris::isAllowedBlock() {
-	vector<Block::Coordinate> coordinates = currentBlock->getBlockCoordinates();
+	auto blockCells = currentBlock->getBlockCells();
 
-	for (auto &coordinate : coordinates) {
-
-		int x = coordinate.x;
-		if (x < 0 || x >= COLS) {
-			return false;
-		}
-
-		int y = coordinate.y;
+	for (auto blockCell : blockCells) {
+		int y = blockCell.coordinate.y;
 		if (y < 0 || y >= ROWS) {
 			return false;
 		}
 
-		if (stackedBlocks[y][x] != 0) {
+		int x = blockCell.coordinate.x;
+		if (x < 0 || x >= COLS) {
+			return false;
+		}
+
+		if (stackedBlocks[y][x].color != Block::Color::EMPTY) {
 			return false;
 		}
 	}
@@ -321,22 +336,25 @@ bool Tetris::isAllowedBlock() {
 }
 
 void Tetris::stackBlock(Block *block) {
-	auto coordinates = block->getBlockCoordinates();
-	for (auto coordinate : coordinates) {
-		stackedBlocks[coordinate.y][coordinate.x] = block->color;
+	auto blockCells = block->getBlockCells();
+	for (auto blockCell : blockCells) {
+		stackedBlocks[blockCell.coordinate.y][blockCell.coordinate.x] = blockCell;
 	}
-	delete block;
+
+	blockCells.clear();
+//	delete currentBlock;
 }
 
 bool Tetris::isFullRow(int row) const {
 	bool isFull = true;
 
 	for (int col = 0; col < COLS; col++) {
-		if (stackedBlocks[row][col] == 0) {
+		if (stackedBlocks[row][col].color == Block::Color::EMPTY) {
 			isFull = false;
 			break;
 		}
 	}
+
 	return isFull;
 }
 

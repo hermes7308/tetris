@@ -1,11 +1,10 @@
 //
-// Created by 박현근 on 2019-04-15.
+// Created by 박현근 on 2019-04-19.
 //
 
-#ifndef TETRIS_BLOCK_H
-#define TETRIS_BLOCK_H
+#ifndef TETRIS_NEWBLOCK_H
+#define TETRIS_NEWBLOCK_H
 
-#include <memory>
 #include <vector>
 
 using namespace std;
@@ -13,8 +12,24 @@ using namespace std;
 class Block {
 public:
 	struct Coordinate {
-		int x;
-		int y;
+		int y = 0;
+		int x = 0;
+	};
+
+	enum Color {
+		EMPTY = 0, // black
+		RED,
+		GREEN,
+		YELLOW,
+		BLUE,
+		MAGENTA,
+		CYAN,
+		WHITE
+	};
+
+	struct BlockCell {
+		Coordinate coordinate = {0, 0};
+		Color color = EMPTY;
 	};
 
 	enum BlockType {
@@ -29,52 +44,48 @@ public:
 		BLOCK_TYPE_COUNT
 	};
 
-	enum BlockColor {
-		BLACK = 0,
-		RED,
-		GREEN,
-		YELLOW,
-		BLUE,
-		MAGENTA,
-		CYAN,
-		WHITE
-	};
+protected:
+	unsigned int matrixSize;
 
-	Block(const Block::Coordinate &coordinate, BlockType blockType, BlockColor color);
+private:
+	Coordinate currentCoordinate = {0, 0};
 
-	virtual ~Block();
+	BlockCell **matrix = nullptr;
 
-	enum Degree {
-		DEGREE_0 = 0,
-		DEGREE_90,
-		DEGREE_180,
-		DEGREE_270,
+	BlockType blockType;
 
-		DEGREE_COUNT
-	};
-	int degree = DEGREE_0;
+public:
+	Block(unsigned int matrixSize, BlockType blockType);
 
-	Coordinate coordinate{};
-
-	BlockType blockType{};
-
-	BlockColor color{};
-
-	vector<Block::Coordinate> getBlockCoordinates();
+	~Block();
 
 	void rotateClockwise();
 
 	void rotateCounterClockwise();
 
+	void swap(BlockCell &blockCell1, BlockCell &blockCell2);
+
+	void moveToUp();
+
+	void moveToDown();
+
+	void moveToRight();
+
+	void moveToLeft();
+
+public:
+	unsigned int getMatrixSize() const;
+
+	BlockCell **getMatrix() const;
+
+	const Coordinate &getCurrentCoordinate() const;
+
+	vector<BlockCell> getBlockCells() const;
+
+	BlockType getBlockType() const;
+
 protected:
-	virtual Coordinate getBlock1() = 0;
-
-	virtual Coordinate getBlock2() = 0;
-
-	virtual Coordinate getBlock3() = 0;
-
-	virtual Coordinate getBlock4() = 0;
-
+	void addBlockCell(int y, int x, BlockCell blockCell);
 };
 
 // BlockType
@@ -100,5 +111,4 @@ protected:
 //  ##	, Z
 /**********/
 
-
-#endif //TETRIS_BLOCK_H
+#endif //TETRIS_NEWBLOCK_H

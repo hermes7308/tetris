@@ -53,7 +53,7 @@ private:
 	static const int ROWS = 20;
 	static const int COLS = 10;
 
-	int stackedBlocks[ROWS][COLS];
+	Block::BlockCell stackedBlocks[ROWS][COLS];
 
 	// draw
 	// border
@@ -69,8 +69,8 @@ private:
 	const int TETRIS_GAME_GROUND_X = TETRIS_BORDER_X + 1;
 	WINDOW *tetrisGameGroundWindow;
 
-	const int TETRIS_META_INFO_BORDER_HEIGHT = 4;
-	const int TETRIS_META_INFO_BORDER_WIDTH = 20;
+	const int TETRIS_META_INFO_BORDER_HEIGHT = 20;
+	const int TETRIS_META_INFO_BORDER_WIDTH = 30;
 	const int TETRIS_META_INFO_BORDER_Y = TETRIS_BORDER_Y;
 	const int TETRIS_META_INFO_BORDER_X = TETRIS_BORDER_X + TETRIS_BORDER_WIDTH + 1;
 	WINDOW *tetrisMetaInfoBorderWindow;

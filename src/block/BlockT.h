@@ -1,5 +1,5 @@
 //
-// Created by 박현근 on 2019-04-16.
+// Created by 박현근 on 2019-04-22.
 //
 
 #ifndef TETRIS_BLOCKT_H
@@ -8,20 +8,13 @@
 
 #include "Block.h"
 
+static const int BLOCK_T_MATRIX_SIZE = 3;
+
 class BlockT : public Block {
 public:
-	BlockT(int x, int y) : Block({x, y}, Block::T, BlockColor::MAGENTA) {
+	BlockT();
 
-	};
-protected:
-	Coordinate getBlock1() override;
-
-	Coordinate getBlock2() override;
-
-	Coordinate getBlock3() override;
-
-	Coordinate getBlock4() override;
-
+	~BlockT();
 };
 
 

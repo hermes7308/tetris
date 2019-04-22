@@ -1,65 +1,17 @@
 //
-// Created by 박현근 on 2019-04-15.
+// Created by 박현근 on 2019-04-22.
 //
 
 #include "BlockI.h"
 
-Block::Coordinate BlockI::getBlock1() {
-	switch (degree) {
-		case DEGREE_0:
-			return Coordinate{coordinate.x + 1, coordinate.y - 1};
-		case DEGREE_90:
-			return Coordinate{coordinate.x + 2, coordinate.y + 1};
-		case DEGREE_180:
-			return Coordinate{coordinate.x, coordinate.y + 2};
-		case DEGREE_270:
-			return Coordinate{coordinate.x - 1, coordinate.y};
-		default:
-			return {};
+BlockI::BlockI() : Block(BLOCK_I_MATRIX_SIZE, BlockType::I) {
+	Color color = RED;
+
+	int x = matrixSize / 2;
+	for (int y = 0; y < matrixSize; y++) {
+		addBlockCell(y, x, BlockCell{{0, 0}, color});
 	}
 }
 
-Block::Coordinate BlockI::getBlock2() {
-	switch (degree) {
-		case DEGREE_0:
-			return Coordinate{coordinate.x + 1, coordinate.y};
-		case DEGREE_90:
-			return Coordinate{coordinate.x + 1, coordinate.y + 1};
-		case DEGREE_180:
-			return Coordinate{coordinate.x, coordinate.y + 1};
-		case DEGREE_270:
-			return Coordinate{coordinate.x, coordinate.y};
-		default:
-			return {};
-	}
-}
-
-Block::Coordinate BlockI::getBlock3() {
-	switch (degree) {
-		case DEGREE_0:
-			return Coordinate{coordinate.x + 1, coordinate.y + 1};
-		case DEGREE_90:
-			return Coordinate{coordinate.x, coordinate.y + 1};
-		case DEGREE_180:
-			return Coordinate{coordinate.x, coordinate.y};
-		case DEGREE_270:
-			return Coordinate{coordinate.x + 1, coordinate.y};
-		default:
-			return {};
-	}
-}
-
-Block::Coordinate BlockI::getBlock4() {
-	switch (degree) {
-		case DEGREE_0:
-			return Coordinate{coordinate.x + 1, coordinate.y + 2};
-		case DEGREE_90:
-			return Coordinate{coordinate.x - 1, coordinate.y + 1};
-		case DEGREE_180:
-			return Coordinate{coordinate.x, coordinate.y - 1};
-		case DEGREE_270:
-			return Coordinate{coordinate.x + 2, coordinate.y};
-		default:
-			return {};
-	}
+BlockI::~BlockI() {
 }

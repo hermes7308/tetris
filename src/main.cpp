@@ -21,13 +21,13 @@ void setup() {
 
 	// init color
 	start_color();
-	init_pair(Block::BlockColor::RED, COLOR_RED, COLOR_BLACK);
-	init_pair(Block::BlockColor::GREEN, COLOR_GREEN, COLOR_BLACK);
-	init_pair(Block::BlockColor::YELLOW, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(Block::BlockColor::BLUE, COLOR_BLUE, COLOR_BLACK);
-	init_pair(Block::BlockColor::MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-	init_pair(Block::BlockColor::CYAN, COLOR_CYAN, COLOR_BLACK);
-	init_pair(Block::BlockColor::WHITE, COLOR_WHITE, COLOR_BLACK);
+	init_pair(Block::Color::RED, COLOR_RED, COLOR_BLACK);
+	init_pair(Block::Color::GREEN, COLOR_GREEN, COLOR_BLACK);
+	init_pair(Block::Color::YELLOW, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(Block::Color::BLUE, COLOR_BLUE, COLOR_BLACK);
+	init_pair(Block::Color::MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(Block::Color::CYAN, COLOR_CYAN, COLOR_BLACK);
+	init_pair(Block::Color::WHITE, COLOR_WHITE, COLOR_BLACK);
 }
 
 void destroy() {
