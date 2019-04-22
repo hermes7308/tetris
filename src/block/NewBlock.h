@@ -17,7 +17,7 @@ public:
 	};
 
 	enum Color {
-		BLACK = 0,
+		EMPTY = 0, // black
 		RED,
 		GREEN,
 		YELLOW,
@@ -28,8 +28,7 @@ public:
 	};
 
 	struct BlockCell {
-		Coordinate coordinate = {0, 0};
-		Color color = BLACK;
+		Color color = EMPTY;
 	};
 
 private:
@@ -40,7 +39,7 @@ private:
 	unsigned int matrixSize;
 
 public:
-	NewBlock(unsigned int matrixSize, vector<BlockCell> blockCells);
+	NewBlock(unsigned int matrixSize);
 
 	~NewBlock();
 
@@ -57,6 +56,8 @@ public:
 
 	const Coordinate &getCoordinate() const;
 
+protected:
+	void addBlockCell(int y, int x, BlockCell blockCell);
 };
 
 

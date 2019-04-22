@@ -5,7 +5,7 @@
 #include "NewBlock.h"
 
 
-NewBlock::NewBlock(unsigned int matrixSize, vector<NewBlock::BlockCell> blockCells) : matrixSize(matrixSize) {
+NewBlock::NewBlock(unsigned int matrixSize) : matrixSize(matrixSize) {
 	matrix = new BlockCell *[matrixSize];
 	for (int i = 0; i < matrixSize; i++) {
 		matrix[i] = new BlockCell[matrixSize];
@@ -15,21 +15,6 @@ NewBlock::NewBlock(unsigned int matrixSize, vector<NewBlock::BlockCell> blockCel
 		for (int j = 0; j < matrixSize; j++) {
 			matrix[i][j] = {};
 		}
-	}
-
-	for (auto blockCell : blockCells) {
-		int y = blockCell.coordinate.y;
-		int x = blockCell.coordinate.x;
-
-		if (y < 0 || y >= matrixSize) {
-			continue;
-		}
-
-		if (x < 0 || x >= matrixSize) {
-			continue;
-		}
-
-		matrix[y][x] = blockCell;
 	}
 }
 
@@ -89,4 +74,16 @@ NewBlock::BlockCell **NewBlock::getMatrix() const {
 
 const NewBlock::Coordinate &NewBlock::getCoordinate() const {
 	return coordinate;
+}
+
+void NewBlock::addBlockCell(int y, int x, NewBlock::BlockCell blockCell) {
+	if (y < 0 || y >= matrixSize) {
+		return;
+	}
+
+	if (x < 0 || y >= matrixSize) {
+		return;
+	}
+
+	matrix[y][x] = blockCell;
 }
