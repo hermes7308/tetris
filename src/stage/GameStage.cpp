@@ -214,8 +214,8 @@ void GameStage::input(StageContext *context) {
 		case ' ':
 			moveToDestination();
 			return;
-		case 'h':
-		case 'H':
+		case 'z':
+		case 'Z':
 			holdBlock();
 			return;
 		default:
