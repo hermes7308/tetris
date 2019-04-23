@@ -24,6 +24,10 @@ using namespace std;
 
 static const char *const BLOCK_CHARACTER = "■";
 
+static const int LEVEL_UP_TIME_DELAY = 6 * 1000;
+
+static const int SPEED_UP_UNIT = 100;
+
 class GameStage : public Stage {
 public:
 	GameStage();
@@ -41,6 +45,8 @@ public:
 	};
 
 protected:
+	void init(StageContext *context) override;
+
 	void drawStatic(StageContext *context) override;
 
 	void draw(StageContext *context) override;
@@ -68,18 +74,6 @@ private:
 	const int TETRIS_GAME_GROUND_X = TETRIS_BORDER_X + 1;
 	WINDOW *tetrisGameGroundWindow;
 
-	const int TETRIS_META_INFO_BORDER_HEIGHT = 5;
-	const int TETRIS_META_INFO_BORDER_WIDTH = 20;
-	const int TETRIS_META_INFO_BORDER_Y = TETRIS_BORDER_Y + TETRIS_BORDER_HEIGHT - TETRIS_META_INFO_BORDER_HEIGHT;
-	const int TETRIS_META_INFO_BORDER_X = TETRIS_BORDER_X - TETRIS_META_INFO_BORDER_WIDTH;
-	WINDOW *tetrisMetaInfoBorderWindow;
-
-	const int TETRIS_META_INFO_HEIGHT = TETRIS_META_INFO_BORDER_HEIGHT - 2;
-	const int TETRIS_META_INFO_WIDTH = TETRIS_META_INFO_BORDER_WIDTH - 2;
-	const int TETRIS_META_INFO_Y = TETRIS_META_INFO_BORDER_Y + 1;
-	const int TETRIS_META_INFO_X = TETRIS_META_INFO_BORDER_X + 1;
-	WINDOW *tetrisMetaInfoWindow;
-
 	const int TETRIS_HOLD_BORDER_HEIGHT = 6;
 	const int TETRIS_HOLD_BORDER_WIDTH = 6;
 	const int TETRIS_HOLD_BORDER_Y = TETRIS_BORDER_Y;
@@ -91,6 +85,18 @@ private:
 	const int TETRIS_HOLD_Y = TETRIS_HOLD_BORDER_Y + 1;
 	const int TETRIS_HOLD_X = TETRIS_HOLD_BORDER_X + 1;
 	WINDOW *tetrisHoldWindow;
+
+	const int TETRIS_META_INFO_BORDER_HEIGHT = 6;
+	const int TETRIS_META_INFO_BORDER_WIDTH = 20;
+	const int TETRIS_META_INFO_BORDER_Y = TETRIS_HOLD_BORDER_Y;
+	const int TETRIS_META_INFO_BORDER_X = TETRIS_HOLD_BORDER_X - TETRIS_META_INFO_BORDER_WIDTH;
+	WINDOW *tetrisMetaInfoBorderWindow;
+
+	const int TETRIS_META_INFO_HEIGHT = TETRIS_META_INFO_BORDER_HEIGHT - 2;
+	const int TETRIS_META_INFO_WIDTH = TETRIS_META_INFO_BORDER_WIDTH - 2;
+	const int TETRIS_META_INFO_Y = TETRIS_META_INFO_BORDER_Y + 1;
+	const int TETRIS_META_INFO_X = TETRIS_META_INFO_BORDER_X + 1;
+	WINDOW *tetrisMetaInfoWindow;
 
 	const int TETRIS_QUEUE_BLOCK_BORDER_HEIGHT = 6;
 	const int TETRIS_QUEUE_BLOCK_BORDER_WIDTH = 6;
@@ -104,6 +110,19 @@ private:
 	const int TETRIS_QUEUE_BLOCK_X = TETRIS_QUEUE_BLOCK_BORDER_X + 1;
 	WINDOW *tetrisQueueBlockWindow;
 
+	const int TETRIS_GAME_BOARD_BORDER_HEIGHT = 6;
+	const int TETRIS_GAME_BOARD_BORDER_WIDTH = 25;
+	const int TETRIS_GAME_BOARD_BORDER_Y = TETRIS_QUEUE_BLOCK_BORDER_Y;
+	const int TETRIS_GAME_BOARD_BORDER_X = TETRIS_QUEUE_BLOCK_BORDER_X + TETRIS_QUEUE_BLOCK_BORDER_WIDTH;
+	WINDOW *tetrisGameBoardBorderWindow;
+
+	const int TETRIS_GAME_BOARD_HEIGHT = TETRIS_GAME_BOARD_BORDER_HEIGHT - 2;
+	const int TETRIS_GAME_BOARD_WIDTH = TETRIS_GAME_BOARD_BORDER_WIDTH - 2;
+	const int TETRIS_GAME_BOARD_Y = TETRIS_GAME_BOARD_BORDER_Y + 1;
+	const int TETRIS_GAME_BOARD_X = TETRIS_GAME_BOARD_BORDER_X + 1;
+	WINDOW *tetrisGameBoardWindow;
+
+
 	Block *currentBlock = nullptr;
 
 	Block *heldBlock = nullptr;
@@ -115,13 +134,19 @@ private:
 	// input value
 	int key{};
 
-	// gameTimer
-	const int MAX_SPEED = 1000;
-	const int MIN_SPEED = 100;
+	// game board
+	unsigned int level = 1;
+	unsigned int score = 0;
+	unsigned int brokenBlockCount = 0;
 
+	// gameTimer
+	const unsigned int MAX_SPEED = 1000;
+	const unsigned int MIN_SPEED = 100;
+
+	milliseconds levelUpGameTime;
 	milliseconds beforeGameTime;
 
-	int speed = MIN_SPEED;
+	unsigned int speed = MIN_SPEED;
 
 	// draw
 	void drawTetrisGame();
@@ -135,6 +160,8 @@ private:
 	void drawTempBlock() const;
 
 	void drawMetaInfo() const;
+
+	void drawGameBoard() const;
 
 	// input event
 	MoveStatus moveToRight();
@@ -169,9 +196,11 @@ private:
 	bool isFullRow(int row) const;
 
 	// gameTimer
-	void setSpeed(int speed);
+	void raiseSpeedUp(int speed);
 
 	void initGameTimer();
+
+	void raiseScore(int row);
 };
 
 

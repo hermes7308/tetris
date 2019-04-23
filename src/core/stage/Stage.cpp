@@ -13,6 +13,10 @@ Stage::~Stage() {
 }
 
 void Stage::Start(StageContext *context) {
+	// initialize meta data
+	init(context);
+
+	// draw static components
 	drawStatic(context);
 
 	running = true;
@@ -42,6 +46,10 @@ void Stage::Start(StageContext *context) {
 
 void Stage::Stop() {
 	running = false;
+}
+
+void Stage::init(StageContext *context) {
+
 }
 
 milliseconds Stage::getCurrentMilliseconds() {

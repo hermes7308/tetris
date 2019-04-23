@@ -30,6 +30,7 @@ public:
 	struct BlockCell {
 		Coordinate coordinate = {0, 0};
 		Color color = EMPTY;
+		unsigned int score = 1;
 	};
 
 	enum BlockType {

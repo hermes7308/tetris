@@ -34,6 +34,8 @@ protected:
 
 	virtual void physics(StageContext *context) = 0;
 
+	virtual void init(StageContext *context);
+
 	bool isRunning() const;
 
 	void setRunning(bool running);

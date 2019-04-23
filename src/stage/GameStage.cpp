@@ -16,9 +16,6 @@ GameStage::GameStage() {
 	}
 	loadNewBlock();
 
-	// init gameTimer
-	initGameTimer();
-
 	setFrame(20);
 }
 
@@ -26,6 +23,11 @@ GameStage::~GameStage() {
 	delete currentBlock;
 
 	blockQueue.clear();
+}
+
+void GameStage::init(StageContext *context) {
+	// init gameTimer
+	initGameTimer();
 }
 
 void GameStage::drawStatic(StageContext *context) {
@@ -49,6 +51,7 @@ void GameStage::drawStatic(StageContext *context) {
 	refresh();
 
 	box(tetrisMetaInfoBorderWindow, 0, 0);
+	mvwprintw(tetrisMetaInfoBorderWindow, 0, 1, "Meta Info");
 	wrefresh(tetrisMetaInfoBorderWindow);
 
 	// drawTetrisMetaInfoWindow
@@ -82,6 +85,19 @@ void GameStage::drawStatic(StageContext *context) {
 	tetrisQueueBlockWindow = newwin(TETRIS_QUEUE_BLOCK_HEIGHT, TETRIS_QUEUE_BLOCK_WIDTH, TETRIS_QUEUE_BLOCK_Y,
 									TETRIS_QUEUE_BLOCK_X);
 	refresh();
+
+	// drawTetrisGameBoardBorderWindow
+	tetrisGameBoardBorderWindow = newwin(TETRIS_GAME_BOARD_BORDER_HEIGHT, TETRIS_GAME_BOARD_BORDER_WIDTH,
+										 TETRIS_GAME_BOARD_BORDER_Y, TETRIS_GAME_BOARD_BORDER_X);
+	refresh();
+	box(tetrisGameBoardBorderWindow, 0, 0);
+	mvwprintw(tetrisGameBoardBorderWindow, 0, 1, "Game Board");
+	wrefresh(tetrisGameBoardBorderWindow);
+
+	// drawTetrisGameBoardWindow
+	tetrisGameBoardWindow = newwin(TETRIS_GAME_BOARD_HEIGHT, TETRIS_GAME_BOARD_WIDTH, TETRIS_GAME_BOARD_Y,
+								   TETRIS_GAME_BOARD_X);
+	refresh();
 }
 
 void GameStage::draw(StageContext *context) {
@@ -90,6 +106,8 @@ void GameStage::draw(StageContext *context) {
 	drawHeldBlock();
 
 	drawTempBlock();
+
+	drawGameBoard();
 
 	drawMetaInfo();
 }
@@ -162,6 +180,16 @@ void GameStage::drawMetaInfo() const {
 	mvwprintw(tetrisMetaInfoWindow, y++, 0, "y : %d", currentBlock->getCurrentCoordinate().y);
 	mvwprintw(tetrisMetaInfoWindow, y++, 0, "x : %d", currentBlock->getCurrentCoordinate().x);
 	wrefresh(tetrisMetaInfoWindow);
+}
+
+void GameStage::drawGameBoard() const {
+	int y = 0;
+	wclear(tetrisGameBoardWindow);
+	mvwprintw(tetrisGameBoardWindow, y++, 0, "Level : %d", level);
+	mvwprintw(tetrisGameBoardWindow, y++, 0, "Score : %d", score);
+	mvwprintw(tetrisGameBoardWindow, y++, 0, "Broken Block Count : %d", brokenBlockCount);
+	mvwprintw(tetrisGameBoardWindow, y++, 0, "Speed : %d", speed);
+	wrefresh(tetrisGameBoardWindow);
 }
 
 void GameStage::input(StageContext *context) {
@@ -307,9 +335,12 @@ void GameStage::holdBlock() {
 		heldBlock = currentBlock;
 		loadNewBlock();
 	} else {
+		auto coordinate = currentBlock->getCurrentCoordinate();
 		auto tempBlock = currentBlock;
 		currentBlock = heldBlock;
 		heldBlock = tempBlock;
+
+		currentBlock->setCurrentCoordinate(coordinate);
 	}
 
 	if (!isAllowedBlock()) {
@@ -321,8 +352,17 @@ void GameStage::physics(StageContext *context) {
 	// remove full row
 	removeFullRow();
 
-	// stage timer
 	milliseconds currentTime = getCurrentTime();
+	// check level up time
+	unsigned int levelUpDelay = static_cast<unsigned int>((currentTime - levelUpGameTime).count());
+	if (levelUpDelay > LEVEL_UP_TIME_DELAY) {
+		levelUpGameTime = currentTime;
+
+		level++;
+		raiseSpeedUp(SPEED_UP_UNIT);
+	}
+
+	// stage timer
 	unsigned int gameDelay = static_cast<unsigned int>((currentTime - beforeGameTime).count());
 	if (gameDelay > (MAX_SPEED - speed)) {
 		beforeGameTime = currentTime;
@@ -333,6 +373,8 @@ void GameStage::physics(StageContext *context) {
 void GameStage::removeFullRow() {
 	for (int row = 0; row < ROWS; row++) {
 		if (isFullRow(row)) {
+			raiseScore(row);
+
 			for (int index = row; index > 0; index--) {
 				for (int col = 0; col < COLS; col++) {
 					stackedBlocks[index][col] = stackedBlocks[index - 1][col];
@@ -341,6 +383,14 @@ void GameStage::removeFullRow() {
 			}
 		}
 	}
+}
+
+void GameStage::raiseScore(int row) {
+	for (int col = 0; col < COLS; col++) {
+		score += stackedBlocks[row][col].score;
+	}
+
+	brokenBlockCount += COLS;
 }
 
 Block *GameStage::createBlock() {
@@ -427,16 +477,19 @@ bool GameStage::isFullRow(int row) const {
 	return isFull;
 }
 
-void GameStage::setSpeed(int speed) {
-	if (MAX_SPEED < speed) {
+void GameStage::raiseSpeedUp(int speed) {
+	this->speed += speed;
+
+	if (MAX_SPEED < this->speed) {
 		this->speed = MAX_SPEED;
 	}
 
-	if (MIN_SPEED > speed) {
+	if (MIN_SPEED > this->speed) {
 		this->speed = MIN_SPEED;
 	}
 }
 
 void GameStage::initGameTimer() {
+	levelUpGameTime = getCurrentTime();
 	beforeGameTime = getCurrentTime();
 }
