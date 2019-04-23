@@ -40,11 +40,9 @@ void GameOverStage::input(StageContext *context) {
 	if (key == ERR) {
 		return;
 	}
-	mvprintw(0, 0, "key: %d", key);
-	refresh();
 
 	switch (key) {
-		case KEY_EXIT:
+		case ESC:
 			context->status = StageContext::STOP;
 			Stop();
 			return;

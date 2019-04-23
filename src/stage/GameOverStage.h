@@ -6,6 +6,8 @@
 #define TETRIS_GAMEOVERSTAGE_H
 
 
+static const int ESC = 27;
+
 #include <cstring>
 #include <ncurses.h>
 #include "../core/stage/Stage.h"

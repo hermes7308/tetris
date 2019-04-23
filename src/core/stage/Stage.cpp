@@ -36,6 +36,7 @@ void Stage::Start(StageContext *context) {
 		physics(context);
 	}
 
+	inputThread.join();
 	Stop();
 }
 

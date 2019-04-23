@@ -9,7 +9,8 @@
 IntroStage::IntroStage() {
 }
 
-IntroStage::~IntroStage() = default;
+IntroStage::~IntroStage() {
+};
 
 void IntroStage::drawStatic(StageContext *context) {
 	// TITLE

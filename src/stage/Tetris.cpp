@@ -37,22 +37,26 @@ void Tetris::destroy() const { endwin(); }
 void Tetris::Start() {
 	setup();
 
-	vector<Stage *> stages;
-	stages.push_back(new IntroStage());
-	stages.push_back(new GameStage());
-	stages.push_back(new GameOverStage());
-
 	auto *context = new StageContext();
-	for (Stage *stage : stages) {
-		if (context->status == StageContext::Status::STOP) {
-			break;
-		}
 
-		stage->Start(context);
+	auto introStage = new IntroStage();
+	introStage->Start(context);
+	delete introStage;
+
+	while (StageContext::CONTINUE == context->status) {
+		// gameStage
+		auto gameStage = new GameStage();
+		gameStage->Start(context);
+		delete gameStage;
+
+		// gameOverStage
+		auto gameOverStage = new GameOverStage();
+		gameOverStage->Start(context);
+		delete gameOverStage;
 	}
+
 	delete context;
 
-	stages.clear();
 
 	destroy();
 }
