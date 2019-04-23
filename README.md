@@ -26,7 +26,7 @@ This is classic `Console Tetris`. It is made by C++ with ncurses library on MacO
     controller : ← → ↓
     change : ↑
     stack directly : space
-    hold on : h
+    hold on : z
     
 
 ![IntroState](./img/intro.png)
