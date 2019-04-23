@@ -6,7 +6,7 @@
 #define TETRIS_INTROPAGE_H
 
 #include <string>
-#include "../core/Stage.h"
+#include "../core/stage/Stage.h"
 
 
 class IntroStage : public Stage {

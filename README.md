@@ -1,6 +1,6 @@
 
-# Console Tetris
-This is classic `Console Tetris`. It is made by C++ with ncurses library on MacOS.
+# Console GameStage
+This is classic `Console GameStage`. It is made by C++ with ncurses library on MacOS.
 
 ## Environment 
     1. OS : macOS, Mojava, 10.14.4
@@ -19,4 +19,4 @@ This is classic `Console Tetris`. It is made by C++ with ncurses library on MacO
     
 
 ![IntroState](./img/IntroStage.png)
-![Tetris](./img/Tetris.png)
+![GameStage](./img/GameStage.png)

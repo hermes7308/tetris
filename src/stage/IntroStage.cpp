@@ -4,12 +4,12 @@
 
 #include <ncurses.h>
 #include "IntroStage.h"
+#include "GameStage.h"
 
 IntroStage::IntroStage() {
 }
 
-IntroStage::~IntroStage() {
-}
+IntroStage::~IntroStage() = default;
 
 void IntroStage::drawStatic(StageContext *context) {
 	// TITLE

@@ -14,7 +14,9 @@ using namespace chrono;
 
 class Stage {
 public:
-	virtual ~Stage();
+	Stage();
+
+	~Stage();
 
 	const int WIDTH = 80;
 	const int HEIGHT = 24;

@@ -4,4 +4,33 @@ project(tetris)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "-lncurses")
 
-add_executable(tetris src/main.cpp src/game/Tetris.cpp src/game/Tetris.h src/game/IntroStage.cpp src/game/IntroStage.h src/core/Stage.cpp src/core/Stage.h src/core/StageContext.cpp src/core/StageContext.h src/block/Block.cpp src/block/Block.h src/block/BlockI.cpp src/block/BlockI.h src/block/BlockJ.cpp src/block/BlockJ.h src/block/BlockL.cpp src/block/BlockL.h src/block/BlockO.cpp src/block/BlockO.h src/block/BlockS.cpp src/block/BlockS.h src/block/BlockT.cpp src/block/BlockT.h src/block/BlockZ.cpp src/block/BlockZ.h)
+add_executable(tetris
+        src/main.cpp
+        src/core/block/Block.cpp
+        src/core/block/Block.h
+        src/core/block/BlockI.cpp
+        src/core/block/BlockI.h
+        src/core/block/BlockJ.cpp
+        src/core/block/BlockJ.h
+        src/core/block/BlockL.cpp
+        src/core/block/BlockL.h
+        src/core/block/BlockO.cpp
+        src/core/block/BlockO.h
+        src/core/block/BlockS.cpp
+        src/core/block/BlockS.h
+        src/core/block/BlockT.cpp
+        src/core/block/BlockT.h
+        src/core/block/BlockZ.cpp
+        src/core/block/BlockZ.h
+        src/core/stage/Stage.cpp
+        src/core/stage/Stage.h
+        src/core/stage/StageContext.cpp
+        src/core/stage/StageContext.h
+        src/stage/IntroStage.cpp
+        src/stage/IntroStage.h
+        src/stage/GameStage.cpp
+        src/stage/GameStage.h
+        src/stage/GameOverStage.cpp
+        src/stage/GameOverStage.h
+        src/stage/Tetris.cpp
+        src/stage/Tetris.h)

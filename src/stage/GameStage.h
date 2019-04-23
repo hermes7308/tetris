@@ -2,29 +2,33 @@
 // Created by 박현근 on 2019-04-10.
 //
 
-#ifndef TETRIS_TETRIS_H
-#define TETRIS_TETRIS_H
+#ifndef TETRIS_GAMESTATE_H
+#define TETRIS_GAMESTATE_H
 
 
 #include <vector>
 #include <ncurses.h>
 #include <random>
 #include <thread>
-#include "../core/Stage.h"
-#include "../block/Block.h"
-#include "../block/BlockI.h"
-#include "../block/BlockJ.h"
-#include "../block/BlockL.h"
-#include "../block/BlockO.h"
-#include "../block/BlockS.h"
-#include "../block/BlockT.h"
-#include "../block/BlockZ.h"
+#include "../core/stage/Stage.h"
+#include "../core/block/Block.h"
+#include "../core/block/BlockI.h"
+#include "../core/block/BlockJ.h"
+#include "../core/block/BlockL.h"
+#include "../core/block/BlockO.h"
+#include "../core/block/BlockS.h"
+#include "../core/block/BlockT.h"
+#include "../core/block/BlockZ.h"
 
 using namespace std;
 
-class Tetris : public Stage {
+static const char *const BLOCK_CHARACTER = "■";
+
+class GameStage : public Stage {
 public:
-	static const char *BLOCK_CHARACTER;
+	GameStage();
+
+	~GameStage();
 
 	enum MoveStatus {
 		NOT_MOVED,
@@ -35,10 +39,6 @@ public:
 		NOT_ROTATED,
 		ROTATED
 	};
-
-	Tetris();
-
-	virtual ~Tetris();
 
 protected:
 	void drawStatic(StageContext *context) override;
@@ -148,4 +148,4 @@ private:
 };
 
 
-#endif //TETRIS_TETRIS_H
+#endif //TETRIS_GAMESTATE_H
