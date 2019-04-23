@@ -17,6 +17,23 @@ This is classic `Console GameStage`. It is made by C++ with ncurses library on M
 
     git clone https://github.com/hermes7308/tetris.git
     
+#### 3. controller
+    
+   
+    input key
+    transkey : ← ↑ → ↓
+    
+##### (1) intro page 
+    controller : ← ↑ → ↓
+    select : enter 
 
-![IntroState](./img/IntroStage.png)
-![GameStage](./img/GameStage.png)
+##### (2) play page 
+    controller : ← → ↓
+    change : ↑
+    stack directly : space
+    hold on : h
+    
+
+![IntroState](./img/intro.png)
+![IntroState](./img/play.png)
+![GameStage](./img/game_over.png)
