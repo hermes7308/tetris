@@ -44,16 +44,14 @@ private:
 	const int GAME_OVER_WINDOW_X = (WIDTH - TITLE_COLS) / 2;
 	WINDOW *gameOverTitleWindow;
 
-	const char *GAME_OVER_EXPLANATION = "Press any key to continue, or Press ESC to exit.";
+	const char *GAME_OVER_EXPLANATION = "Press 'space' to continue, Press 'q' to exit.";
 	const int GAME_OVER_EXPLANATION_HEIGHT = 1;
-	const int GAME_OVER_EXPLANATION_WIDTH = GAME_OVER_WINDOW_WIDTH;
+	const int GAME_OVER_EXPLANATION_WIDTH = static_cast<const int>(strlen(GAME_OVER_EXPLANATION));
 	const int GAME_OVER_EXPLANATION_Y = GAME_OVER_WINDOW_Y + GAME_OVER_WINDOW_HEIGHT + 5;
-	const int GAME_OVER_EXPLANATION_X = static_cast<const int>((WIDTH - strlen(GAME_OVER_EXPLANATION)) / 2);
+	const int GAME_OVER_EXPLANATION_X = (WIDTH - GAME_OVER_EXPLANATION_WIDTH) / 2;
 	WINDOW *gameOverExplanationWindow;
 
 	int key{};
-
-
 };
 
 

@@ -56,7 +56,6 @@ private:
 	Block::BlockCell stackedBlocks[ROWS][COLS];
 
 	// draw
-	// border
 	const int TETRIS_BORDER_HEIGHT = ROWS + 2;
 	const int TETRIS_BORDER_WIDTH = COLS + 2;
 	const int TETRIS_BORDER_Y = 0;
@@ -69,26 +68,48 @@ private:
 	const int TETRIS_GAME_GROUND_X = TETRIS_BORDER_X + 1;
 	WINDOW *tetrisGameGroundWindow;
 
-	const int TETRIS_META_INFO_BORDER_HEIGHT = 20;
-	const int TETRIS_META_INFO_BORDER_WIDTH = 30;
-	const int TETRIS_META_INFO_BORDER_Y = TETRIS_BORDER_Y;
-	const int TETRIS_META_INFO_BORDER_X = TETRIS_BORDER_X + TETRIS_BORDER_WIDTH + 1;
+	const int TETRIS_META_INFO_BORDER_HEIGHT = 5;
+	const int TETRIS_META_INFO_BORDER_WIDTH = 20;
+	const int TETRIS_META_INFO_BORDER_Y = TETRIS_BORDER_Y + TETRIS_BORDER_HEIGHT - TETRIS_META_INFO_BORDER_HEIGHT;
+	const int TETRIS_META_INFO_BORDER_X = TETRIS_BORDER_X - TETRIS_META_INFO_BORDER_WIDTH;
 	WINDOW *tetrisMetaInfoBorderWindow;
 
 	const int TETRIS_META_INFO_HEIGHT = TETRIS_META_INFO_BORDER_HEIGHT - 2;
 	const int TETRIS_META_INFO_WIDTH = TETRIS_META_INFO_BORDER_WIDTH - 2;
 	const int TETRIS_META_INFO_Y = TETRIS_META_INFO_BORDER_Y + 1;
-	const int TETRIS_META_INFO_X = TETRIS_BORDER_X + TETRIS_BORDER_WIDTH + 1 + 1;
+	const int TETRIS_META_INFO_X = TETRIS_META_INFO_BORDER_X + 1;
 	WINDOW *tetrisMetaInfoWindow;
 
-	// start
-	const int startX = (COLS / 2);
-	const int startY = 1;
+	const int TETRIS_HOLD_BORDER_HEIGHT = 6;
+	const int TETRIS_HOLD_BORDER_WIDTH = 6;
+	const int TETRIS_HOLD_BORDER_Y = TETRIS_BORDER_Y;
+	const int TETRIS_HOLD_BORDER_X = TETRIS_BORDER_X - TETRIS_HOLD_BORDER_WIDTH;
+	WINDOW *tetrisHoldBorderWindow;
+
+	const int TETRIS_HOLD_HEIGHT = 4;
+	const int TETRIS_HOLD_WIDTH = 4;
+	const int TETRIS_HOLD_Y = TETRIS_HOLD_BORDER_Y + 1;
+	const int TETRIS_HOLD_X = TETRIS_HOLD_BORDER_X + 1;
+	WINDOW *tetrisHoldWindow;
+
+	const int TETRIS_QUEUE_BLOCK_BORDER_HEIGHT = 6;
+	const int TETRIS_QUEUE_BLOCK_BORDER_WIDTH = 6;
+	const int TETRIS_QUEUE_BLOCK_BORDER_Y = TETRIS_BORDER_Y;
+	const int TETRIS_QUEUE_BLOCK_BORDER_X = TETRIS_BORDER_X + TETRIS_BORDER_WIDTH;
+	WINDOW *tetrisQueueBlockBorderWindow;
+
+	const int TETRIS_QUEUE_BLOCK_HEIGHT = TETRIS_QUEUE_BLOCK_BORDER_HEIGHT - 2;
+	const int TETRIS_QUEUE_BLOCK_WIDTH = TETRIS_QUEUE_BLOCK_BORDER_HEIGHT - 2;
+	const int TETRIS_QUEUE_BLOCK_Y = TETRIS_QUEUE_BLOCK_BORDER_Y + 1;
+	const int TETRIS_QUEUE_BLOCK_X = TETRIS_QUEUE_BLOCK_BORDER_X + 1;
+	WINDOW *tetrisQueueBlockWindow;
 
 	Block *currentBlock = nullptr;
 
+	Block *heldBlock = nullptr;
+
 	// block queue
-	const int blockQueueSize = 5;
+	const int blockQueueSize = 4;
 	vector<Block *> blockQueue;
 
 	// input value
@@ -108,6 +129,10 @@ private:
 	void drawStackedBlock();
 
 	void drawCurrentBlock();
+
+	void drawHeldBlock() const;
+
+	void drawTempBlock() const;
 
 	void drawMetaInfo() const;
 
@@ -140,6 +165,8 @@ private:
 	void removeFullRow();
 
 	bool isFullRow(int row) const;
+
+	void holdBlock();
 
 	// gameTimer
 	void setSpeed(int speed);

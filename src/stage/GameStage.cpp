@@ -55,54 +55,43 @@ void GameStage::drawStatic(StageContext *context) {
 	tetrisMetaInfoWindow = newwin(TETRIS_META_INFO_HEIGHT, TETRIS_META_INFO_WIDTH, TETRIS_META_INFO_Y,
 								  TETRIS_META_INFO_X);
 	refresh();
+
+	// drawTetrisHoldBorderWindow
+	tetrisHoldBorderWindow = newwin(TETRIS_HOLD_BORDER_HEIGHT, TETRIS_HOLD_BORDER_WIDTH, TETRIS_HOLD_BORDER_Y,
+									TETRIS_HOLD_BORDER_X);
+	refresh();
+
+	box(tetrisHoldBorderWindow, 0, 0);
+	mvwprintw(tetrisHoldBorderWindow, 0, 1, "Hold");
+	wrefresh(tetrisHoldBorderWindow);
+
+	// drawTetrisHoldWindow
+	tetrisHoldWindow = newwin(TETRIS_HOLD_HEIGHT, TETRIS_HOLD_WIDTH, TETRIS_HOLD_Y, TETRIS_HOLD_X);
+	refresh();
+
+	// drawTetrisQueueBlockBorderWindow
+	tetrisQueueBlockBorderWindow = newwin(TETRIS_QUEUE_BLOCK_BORDER_HEIGHT, TETRIS_QUEUE_BLOCK_BORDER_WIDTH,
+										  TETRIS_QUEUE_BLOCK_BORDER_Y, TETRIS_QUEUE_BLOCK_BORDER_X);
+	refresh();
+
+	box(tetrisQueueBlockBorderWindow, 0, 0);
+	mvwprintw(tetrisQueueBlockBorderWindow, 0, 1, "Next");
+	wrefresh(tetrisQueueBlockBorderWindow);
+
+	// drawTetrisQueueBlockWindow
+	tetrisQueueBlockWindow = newwin(TETRIS_QUEUE_BLOCK_HEIGHT, TETRIS_QUEUE_BLOCK_WIDTH, TETRIS_QUEUE_BLOCK_Y,
+									TETRIS_QUEUE_BLOCK_X);
+	refresh();
 }
 
 void GameStage::draw(StageContext *context) {
 	drawTetrisGame();
 
+	drawHeldBlock();
+
+	drawTempBlock();
+
 	drawMetaInfo();
-}
-
-void GameStage::input(StageContext *context) {
-	key = getch();
-	if (key == ERR) {
-		return;
-	}
-
-	switch (key) {
-		case KEY_UP:
-			rotateBlock();
-			return;
-		case KEY_DOWN:
-			moveToDown();
-			return;
-		case KEY_LEFT:
-			moveToLeft();
-			return;
-		case KEY_RIGHT:
-			moveToRight();
-			return;
-		default:
-			break;
-	}
-
-	if (key == ' ') {
-		moveToDestination();
-		return;
-	}
-}
-
-void GameStage::physics(StageContext *context) {
-	// remove full row
-	removeFullRow();
-
-	// stage timer
-	milliseconds currentTime = getCurrentTime();
-	unsigned int gameDelay = static_cast<unsigned int>((currentTime - beforeGameTime).count());
-	if (gameDelay > (MAX_SPEED - speed)) {
-		beforeGameTime = currentTime;
-		moveToDown();
-	}
 }
 
 void GameStage::drawTetrisGame() {
@@ -136,6 +125,36 @@ void GameStage::drawCurrentBlock() {
 	blockCells.clear();
 }
 
+void GameStage::drawHeldBlock() const {
+	if (heldBlock != nullptr) {
+		wclear(tetrisHoldWindow);
+
+		auto blockCells = heldBlock->getPureBlockCells();
+		for (auto blockCell : blockCells) {
+			wattron(tetrisHoldWindow, COLOR_PAIR(blockCell.color));
+			mvwprintw(tetrisHoldWindow, blockCell.coordinate.y, blockCell.coordinate.x, "%s", BLOCK_CHARACTER);
+			wattroff(tetrisHoldWindow, COLOR_PAIR(blockCell.color));
+		}
+
+		blockCells.clear();
+		wrefresh(tetrisHoldWindow);
+	}
+}
+
+void GameStage::drawTempBlock() const {
+	wclear(tetrisQueueBlockWindow);
+	auto block = blockQueue.back();
+	for (auto blockCell : block->getPureBlockCells()) {
+		int y = blockCell.coordinate.y;
+		int x = blockCell.coordinate.x;
+
+		wattron(tetrisQueueBlockWindow, COLOR_PAIR(blockCell.color));
+		mvwprintw(tetrisQueueBlockWindow, y, x, "%s", BLOCK_CHARACTER);
+		wattroff(tetrisQueueBlockWindow, COLOR_PAIR(blockCell.color));
+	}
+	wrefresh(tetrisQueueBlockWindow);
+}
+
 void GameStage::drawMetaInfo() const {
 	int y = 0;
 	wclear(tetrisMetaInfoWindow);
@@ -143,6 +162,37 @@ void GameStage::drawMetaInfo() const {
 	mvwprintw(tetrisMetaInfoWindow, y++, 0, "y : %d", currentBlock->getCurrentCoordinate().y);
 	mvwprintw(tetrisMetaInfoWindow, y++, 0, "x : %d", currentBlock->getCurrentCoordinate().x);
 	wrefresh(tetrisMetaInfoWindow);
+}
+
+void GameStage::input(StageContext *context) {
+	key = getch();
+	if (key == ERR) {
+		return;
+	}
+
+	switch (key) {
+		case KEY_UP:
+			rotateBlock();
+			return;
+		case KEY_DOWN:
+			moveToDown();
+			return;
+		case KEY_LEFT:
+			moveToLeft();
+			return;
+		case KEY_RIGHT:
+			moveToRight();
+			return;
+		case ' ':
+			moveToDestination();
+			return;
+		case 'h':
+		case 'H':
+			holdBlock();
+			return;
+		default:
+			break;
+	}
 }
 
 GameStage::MoveStatus GameStage::moveToRight() {
@@ -252,6 +302,19 @@ GameStage::RotateStatus GameStage::rotate() {
 	return ROTATED;
 }
 
+void GameStage::physics(StageContext *context) {
+	// remove full row
+	removeFullRow();
+
+	// stage timer
+	milliseconds currentTime = getCurrentTime();
+	unsigned int gameDelay = static_cast<unsigned int>((currentTime - beforeGameTime).count());
+	if (gameDelay > (MAX_SPEED - speed)) {
+		beforeGameTime = currentTime;
+		moveToDown();
+	}
+}
+
 void GameStage::removeFullRow() {
 	for (int row = 0; row < ROWS; row++) {
 		if (isFullRow(row)) {
@@ -349,6 +412,21 @@ bool GameStage::isFullRow(int row) const {
 	return isFull;
 }
 
+void GameStage::holdBlock() {
+	if (heldBlock == nullptr) {
+		heldBlock = currentBlock;
+		loadNewBlock();
+	} else {
+		auto tempBlock = currentBlock;
+		currentBlock = heldBlock;
+		heldBlock = tempBlock;
+	}
+
+	if (!isAllowedBlock()) {
+		holdBlock();
+	}
+}
+
 void GameStage::setSpeed(int speed) {
 	if (MAX_SPEED < speed) {
 		this->speed = MAX_SPEED;
@@ -359,4 +437,6 @@ void GameStage::setSpeed(int speed) {
 	}
 }
 
-void GameStage::initGameTimer() { beforeGameTime = getCurrentTime(); }
+void GameStage::initGameTimer() {
+	beforeGameTime = getCurrentTime();
+}

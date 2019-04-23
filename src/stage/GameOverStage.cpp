@@ -31,7 +31,11 @@ void GameOverStage::drawStatic(StageContext *context) {
 
 void GameOverStage::draw(StageContext *context) {
 	wclear(gameOverExplanationWindow);
+
+	wattron(gameOverExplanationWindow, A_REVERSE);
 	mvwprintw(gameOverExplanationWindow, 0, 0, GAME_OVER_EXPLANATION);
+	wattroff(gameOverExplanationWindow, A_REVERSE);
+
 	wrefresh(gameOverExplanationWindow);
 }
 
@@ -42,13 +46,17 @@ void GameOverStage::input(StageContext *context) {
 	}
 
 	switch (key) {
+		case 'q':
+		case 'Q':
 		case ESC:
 			context->status = StageContext::STOP;
 			Stop();
 			return;
-		default:
+		case ' ':
 			context->status = StageContext::CONTINUE;
 			Stop();
+			return;
+		default:
 			return;
 	}
 }

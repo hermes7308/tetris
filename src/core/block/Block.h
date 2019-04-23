@@ -80,7 +80,11 @@ public:
 
 	const Coordinate &getCurrentCoordinate() const;
 
+	void setCurrentCoordinate(const Coordinate &currentCoordinate);
+
 	vector<BlockCell> getBlockCells() const;
+
+	vector<BlockCell> getPureBlockCells() const;
 
 	BlockType getBlockType() const;
 
