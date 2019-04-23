@@ -149,6 +149,8 @@ private:
 
 	RotateStatus rotate();
 
+	void holdBlock();
+
 	// block queue
 	Block *createBlock();
 
@@ -165,8 +167,6 @@ private:
 	void removeFullRow();
 
 	bool isFullRow(int row) const;
-
-	void holdBlock();
 
 	// gameTimer
 	void setSpeed(int speed);

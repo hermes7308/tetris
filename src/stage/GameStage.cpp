@@ -302,6 +302,21 @@ GameStage::RotateStatus GameStage::rotate() {
 	return ROTATED;
 }
 
+void GameStage::holdBlock() {
+	if (heldBlock == nullptr) {
+		heldBlock = currentBlock;
+		loadNewBlock();
+	} else {
+		auto tempBlock = currentBlock;
+		currentBlock = heldBlock;
+		heldBlock = tempBlock;
+	}
+
+	if (!isAllowedBlock()) {
+		holdBlock();
+	}
+}
+
 void GameStage::physics(StageContext *context) {
 	// remove full row
 	removeFullRow();
@@ -410,21 +425,6 @@ bool GameStage::isFullRow(int row) const {
 	}
 
 	return isFull;
-}
-
-void GameStage::holdBlock() {
-	if (heldBlock == nullptr) {
-		heldBlock = currentBlock;
-		loadNewBlock();
-	} else {
-		auto tempBlock = currentBlock;
-		currentBlock = heldBlock;
-		heldBlock = tempBlock;
-	}
-
-	if (!isAllowedBlock()) {
-		holdBlock();
-	}
 }
 
 void GameStage::setSpeed(int speed) {
